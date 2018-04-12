@@ -1,0 +1,128 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+#include <iostream>
+#include <string>
+#include<vector>
+#include<algorithm>
+
+using namespace std;
+
+void unionAndIntersection(vector<int>& nums1, vector<int>& nums2, vector<int>& Union, vector<int>& Intersection)
+{
+    sort(nums1.begin(), nums1.end());
+    sort(nums2.begin(), nums2.end());
+    
+    int i=0; 
+    int j=0;
+    int m=nums1.size();
+    int n= nums2.size();
+    int curr;
+    while(i<m && j<n)
+    {
+        if(nums1[i]< nums2[j])
+        {
+            if(curr != nums1[i])
+            {
+                curr =  nums1[i];
+                Union.push_back(nums1[i]);
+                
+            }
+            
+            i++;
+        }
+        else if(nums1[i]==nums2[j])
+        {
+            if(curr != nums1[i])
+            {
+                Union.push_back(nums1[i]);
+                Intersection.push_back(nums1[i]);
+                
+                curr= nums1[i];
+            }
+            
+             i++;
+             j++;
+            
+        }
+        else
+        {
+            if(curr != nums2[j])
+            {
+                curr=nums2[j];
+                Union.push_back(nums2[j]);
+                
+            }
+            
+            j++;
+        }
+    }
+    	while(i<m)
+	{
+
+		if(curr != nums1[i]
+		{
+			curr= nums1[i];
+			union.push_back(nums1[i]);
+			
+		}
+		i++;
+
+
+	}
+
+	while(j<m)
+	{
+
+		if(curr != nums2[j]
+		{
+			curr= nums2[j];
+			union.push_back(nums2[j]);
+			
+		}
+		j++;
+
+
+	}
+   
+}    
+
+int main()
+{
+  vector<int> nums1;
+  nums1.push_back(5);
+  nums1.push_back(19);
+  nums1.push_back(6);
+  nums1.push_back(15);
+  nums1.push_back(7);
+  nums1.push_back(7);
+  nums1.push_back(18);
+  nums1.push_back(20);
+  vector<int> nums2;
+  nums2.push_back(5);
+  nums2.push_back(5);
+  nums2.push_back(20);
+  nums2.push_back(7);
+  nums2.push_back(54);
+  nums2.push_back(58);
+  
+  vector<int> uni;
+  vector<int> intersection;
+  unionAndIntersection(nums1, nums2, uni, intersection);
+  for(int i=0;i< uni.size(); i++)
+  {
+      cout<<uni[i]<<",";
+  }
+  cout<<"-----------------------------------";
+  
+  for(int i=0; i<intersection.size();i++)
+  {
+      cout<<intersection[i]<<",";
+  }
+}
+
+

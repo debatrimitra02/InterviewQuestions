@@ -1,0 +1,69 @@
+// 1) Create an empty stack.
+
+// 2) Start from first bar, and do following for every bar ‘hist[i]’ where ‘i’ varies from 0 to n-1.
+// ……a) If stack is empty or hist[i] is higher than the bar at top of stack, then push ‘i’ to stack.
+// ……b) If this bar is smaller than the top of stack, then keep removing the top of stack while top of the stack is greater. Let the removed bar be hist[tp]. Calculate area of rectangle with hist[tp] as smallest bar. For hist[tp], the ‘left index’ is previous (previous to tp) item in stack and ‘right index’ is ‘i’ (current index).
+
+// 3) If the stack is not empty, then one by one remove all bars from stack and do step 2.b for every removed bar.
+
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& heights) 
+    {
+        if(heights.size() == 1)
+            return heights[0];
+        
+        int area=0;
+        int maxArea = 0;
+        stack<int> S;
+        int i=0;
+        int top = 0;
+        
+        while(i< heights.size())
+        {
+            // If this bar is higher than the bar on top 
+            // stack, push it to stack
+            if(S.empty() || heights[S.top()] <= heights[i])
+            {
+                S.push(i);
+                i++;
+                
+            }
+            else
+            {
+                // If this bar is lower than top of stack, 
+                // then calculate area of rectangle with stack 
+                // top as the smallest (or minimum height) bar. 
+                // 'i' is 'right index' for the top and element 
+                // before top in stack is 'left index'
+                top = S.top();
+                S.pop();
+                
+                // Calculate the area with hist[tp] stack 
+                // as smallest bar
+                area = heights[top] * (S.empty() ? i : 
+                                   i - S.top() - 1);
+ 
+            // update max area, if needed
+            if (maxArea < area)
+                maxArea = area;
+            }
+        }
+        
+        // Now pop the remaining bars from stack and calculate
+       // area with every popped bar as the smallest bar
+        while (S.empty() == false)
+        {
+            top = S.top();
+            S.pop();
+            area = heights[top] * (S.empty() ? i : 
+                                    i - S.top() - 1);
+
+            if (maxArea < area)
+                maxArea = area;
+        }
+
+    return maxArea;
+        
+    }
+};

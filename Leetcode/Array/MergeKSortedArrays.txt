@@ -1,0 +1,78 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include<queue>
+#include<vector>
+#include<climits>
+
+using namespace std;
+
+class Point
+{
+    public:
+        int val;
+        int index;
+        int nextIndex;
+};
+
+struct comparison 
+{
+public:
+    bool operator() (const Point& lhs, Point& rhs) const {
+        return (lhs.val>rhs.val);
+    }
+};
+
+vector<int> mergeKSortedArray(vector<vector<int>> arr)
+{
+    vector<int> res;
+    if(arr.empty())
+        return res;
+        
+    priority_queue<Point, vector<Point>, comparison> pq;
+    
+    for(int i=0; i< arr.size(); i++)
+    {
+        Point temp;
+        temp.val = arr[i][0];
+        temp.index = i;
+        temp.nextIndex = 1;
+        pq.push(temp);
+    }
+    
+    for(int count = 0; count< (arr.size()*arr[0].size()); count++)
+    {
+        Point temp = pq.top();
+        pq.pop();
+        res.push_back(temp.val);
+        
+        if(temp.nextIndex < arr[temp.index].size())
+        {
+            temp.val = arr[temp.index][temp.nextIndex];
+            temp.nextIndex +=1;
+        }
+        else
+        {
+            temp.val = INT_MAX;
+        }
+        pq.push(temp);
+    }
+    
+    return res;
+    
+}
+
+int main()
+{
+    vector<vector<int>> V = {{1,5,9}, {2,8,13}, {4,10,11}};
+    vector<int> res = mergeKSortedArray(V);
+    for(int i=0; i<res.size(); i++)
+        cout<<res[i]<<",";
+   
+}

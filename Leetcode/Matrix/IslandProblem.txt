@@ -1,0 +1,95 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include<vector>
+#include<algorithm>
+
+
+
+/* mat[][] =      {{1, 1, 0, 0, 0},
+                   {0, 1, 0, 0, 1},
+                   {1, 0, 0, 1, 1},
+                   {0, 0, 0, 0, 0},
+                   {1, 0, 1, 0, 1} */
+                   
+                     //   [i-1, j-1] [i-1, j] [i-1, j+1]
+                   //for  [i,j-1] [i,j] [i,j+1] 
+                    //    [i+1, j-1] [i+1, j]    [i+1, j+1]
+using namespace std;
+
+bool isSafe(vector<vector<int>> arr, vector<vector<bool> >&visited, int row, int col)
+{
+    int Row = arr.size();
+    int Column = arr[0].size();
+    return (row >= 0 && row < Row && col >=0 && col< Column && arr[row][col] == 1 && !visited[row][col]);
+}
+
+void DFS(vector<vector<int>> arr, vector<vector<bool> >&visited, int row, int col)
+{
+    visited[row][col] = true;
+    
+    for(int i = row-1; i<= row+1; i++)
+    {
+        for(int j= col-1; j<= col+1; j++)
+        {
+            if(isSafe(arr, visited, i, j))
+                DFS(arr, visited, i, j);
+        }
+    }
+}
+
+int countIslands(vector<vector<int>> arr)
+{
+    int row = arr.size();
+    int column = arr[0].size();
+    
+    std::vector<std::vector<bool>> visited(row, std::vector<bool>(column, false));
+    //memset(visited, false, sizeof(visited));
+    
+    int count=0;
+    
+    for(int i=0; i<row; i++)
+    {
+        for(int j=0; j<column; j++)
+        {
+           if(!visited[i][j] && arr[i][j] == 1)
+           {
+               DFS(arr,visited, i, j);
+               count++;
+           }
+            
+        }
+        
+    }
+    for(int i=0; i<visited.size(); i++)
+    {
+        vector<bool> temp = visited[i];
+        for(int j=0; j<visited[i].size(); j++)
+        {
+            cout<<visited[i][j]<<",";
+        }
+        cout<<endl;
+    }
+    return count;
+}
+
+int main()
+{
+    vector<vector<int>> islands = {{1, 1, 0, 0, 0},
+                                   {0, 1, 0, 0, 1},
+                                   {1, 0, 0, 1, 1},
+                                   {0, 0, 0, 0, 0},
+                                   {1, 0, 1, 0, 1} };
+                   
+    int count = countIslands(islands);
+    cout<<count;
+}
+
+
+

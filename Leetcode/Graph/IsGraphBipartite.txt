@@ -1,0 +1,66 @@
+// Following is a simple algorithm to find out whether a given graph is Birpartite or not using Breadth First Search (BFS).
+// 1. Assign RED color to the source vertex (putting into set U).
+// 2. Color all the neighbors with BLUE color (putting into set V).
+// 3. Color all neighbor’s neighbor with RED color (putting into set U).
+// 4. This way, assign color to all vertices such that it satisfies all the constraints of m way coloring problem where m = 2.
+// 5. While assigning colors, if we find a neighbor which is colored with same color as current vertex, then the graph cannot be colored with 2 vertices (or graph is not Bipartite)
+// we always start with source 0 and assume that vertices are visited from it. One important observation is a graph with no edges is also Bipiartite. Note that the Bipartite condition says all edges should be from one set to another.
+
+// We can extend the above code to handle cases when a graph is not connected. The idea is repeatedly call above method for all not yet visited vertices.
+
+
+
+
+class Solution {
+public:
+    bool isBipartiteUtil(vector<vector<int>>& graph, int source, int colorArr[])
+    {
+        colorArr[source] = 1;
+        
+        queue <int> q;
+        q.push(source);
+        while (!q.empty())
+        {
+            int src = q.front();
+            q.pop();
+            
+            vector<int> neighbors = graph[src];
+            for(int i=0; i<neighbors.size(); i++)
+            {
+                // An edge from u to v exists and destination v is not colored
+                //if neighbors are not colored
+                if(colorArr[neighbors[i]] == -1)
+                {
+                   // Assign alternate color to this adjacent v of u
+                    colorArr[neighbors[i]] = 1 - colorArr[src];
+                     q.push(neighbors[i]);
+                }
+                //  An edge from u to v exists and destination v is colored with
+                // same color as u
+                if (colorArr[neighbors[i]] == colorArr[src])
+                    return false;
+            }
+        }
+        
+        // If we reach here, then all adjacent vertices can be colored with 
+        // alternate color
+        return true;
+    }
+    
+    bool isBipartite(vector<vector<int>>& graph) 
+    {
+        
+        int V = graph.size();
+        int colorArr[V];
+        for (int i = 0; i < V; ++i)
+            colorArr[i] = -1;
+        
+        for (int i = 0; i < V; i++)
+            if (colorArr[i] == -1)
+                if (isBipartiteUtil(graph, i, colorArr) == false)
+                    return false;
+        
+        return true;
+    }
+    
+};

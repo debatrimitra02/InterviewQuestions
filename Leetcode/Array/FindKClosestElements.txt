@@ -1,21 +1,26 @@
 /* Given a sorted array, two integers k and x, find the k closest elements to x in the array. The result should also be sorted in ascending order. If there is a tie, the smaller elements are always preferred.   */
-//Complexity: O(k+ logn)
+
 
 class Solution {
 public:
     
     int findInflectionPoint(vector<int>& arr, int k, int x, int start, int end)
     {
-        if(start >= end)
-            return start;
-        
         int mid = (start + end)/2;
         
         if(arr[mid] == x)
         {
             return mid;
         }
-       
+        
+        cout<<start<<"," ;
+        cout<<end;
+        cout<<endl;
+        
+        
+        if(start >= end)
+            return start;
+        
         if(arr[mid] > x)
             return findInflectionPoint(arr,  k, x, start, mid-1);
         else
@@ -28,7 +33,7 @@ public:
         int start = inflection-1;
         int end = inflection;
         int count =0;
-        while(start >= 0 && end <= arr.size()-1 && count < k)
+        while(start >= 0 && end <= arr.size()-1)
         {
             if(abs(x-arr[start]) <= abs(x-arr[end]))
             {
@@ -42,6 +47,8 @@ public:
             }
             count++;
             
+            if(count == k)
+                return;
         }
         
         while(count < k)

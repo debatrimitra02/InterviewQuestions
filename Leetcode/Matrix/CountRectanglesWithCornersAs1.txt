@@ -1,0 +1,82 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+/*
+Given a grid where each entry is only 0 or 1, find the number of corner rectangles.
+A corner rectangle is 4 distinct 1s on the grid that form an axis-aligned rectangle. 
+Note that only the corners need to have the value 1. Also, all four 1s used must be distinct.
+
+Input: grid = 
+[[1, 0, 0, 1, 0],
+ [0, 0, 1, 0, 1],
+ [0, 0, 0, 1, 0],
+ [1, 0, 1, 0, 1]]
+ 
+ Output: 1
+Explanation: There is only one corner rectangle, with corners grid[1][2], grid[1][4], grid[3][2], grid[3][4].
+
+
+Input: grid = 
+[[1, 1, 1],
+ [1, 1, 1],
+ [1, 1, 1]]
+Output: 9
+
+
+The naive solution enumerates the coordinates of the upper left corner and the lower right corner. The time complexity is O(m^2 * n^2), which leads to TLE.
+
+*/
+
+//Combination time complexity O(m^2 * n)
+
+
+#include <iostream>
+#include<vector>
+#include<map>
+#include<set>
+#include<climits>
+#include<algorithm>
+
+using namespace std;
+
+int isRectangle(const vector<vector<int> >& grid)
+{
+    // finding row and column size
+    int m = grid.size();
+    if(m== 0)
+        return 0;
+        
+    int n = grid[0].size();
+        int ans = 0;
+//taking two rows at a time
+        for (int x = 0; x < m; x++) {
+            for (int y = x + 1; y < m; y++) {
+                int cnt = 0;
+                for (int z = 0; z < n; z++) {
+                    if (grid[x][z] == 1 && grid[y][z] == 1) {
+                        cnt++;
+                    }
+                }
+	//There will be nC2 combinations if there are n edges
+                ans += cnt * (cnt - 1) / 2;
+            }
+        }
+        return ans;
+}
+ 
+// Driver code
+int main()
+{
+    vector<vector<int> > mat = { { 0, 0, 1, 1, 1 },
+                                 { 0, 0, 1, 0, 1 },
+                                 { 0, 0, 1, 1, 1 },
+                                {  1, 0, 1, 0, 1 } };
+    
+    int count = isRectangle(mat);
+    cout<<count; // output = 8
+}

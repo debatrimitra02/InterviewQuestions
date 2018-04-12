@@ -1,0 +1,32 @@
+bool isSafe(int row, int col, int arr[M][N])
+{
+    for(int i= row-range; i<= row+range; i++)
+    {
+        for(int j= col-range; j<= col+range; j++)
+        {
+            if(i >= 0 && i<M && j >=0 && j< N && arr[i][j] == 1)
+            {
+                int dist = sqrt((row -i)*(row-i) + (col-j)*(col-j));
+                if(dist <= range)
+                {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+int probabilityOfLanding(int arr[M][N])
+{
+    int count=0;
+    for(int i=0; i<M; i++)
+    {
+        for(int j=0; j<N; j++)
+        {
+            if(isSafe(i, j, arr))
+             count++;
+        }
+    }
+    return count/(M*N);
+}

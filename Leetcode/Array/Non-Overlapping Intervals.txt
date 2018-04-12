@@ -1,0 +1,44 @@
+//Complexity: O(nlogn)
+
+/**
+ * Definition for an interval.
+ * struct Interval {
+ *     int start;
+ *     int end;
+ *     Interval() : start(0), end(0) {}
+ *     Interval(int s, int e) : start(s), end(e) {}
+ * };
+ */
+class Solution {
+public:
+    int eraseOverlapIntervals(vector<Interval>& intervals) {
+        auto comp = [](const Interval& i1, const Interval& i2){ return i1.start < i2.start; };
+        sort(intervals.begin(), intervals.end(), comp); //nlogn
+        int res=0;
+        
+        int i=1;
+        int j=0;
+        
+        while(i<intervals.size())
+        {
+            
+            
+                if(intervals[i].start < intervals[j].end)
+                {
+                    res++;
+                    //this means that j is a bigger interval than i which is a complete overlap, so remove the bigger interval                         such that there is a lesser chance of overlap
+                    // [[1,100],[11,22],[1,11],[2,12]]
+                    
+                    if (intervals[i].end < intervals[j].end) 
+                        j = i; 
+                }
+                else{
+                    j=i;
+                }
+                    
+            
+            i++;
+        }
+        return res;
+    }
+};

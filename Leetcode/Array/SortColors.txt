@@ -1,0 +1,40 @@
+class Solution {
+public:
+
+    void swap(vector<int>& nums, int a, int b)
+    {
+        int temp;
+        temp=nums[a];
+        nums[a]=nums[b];
+        nums[b]=temp;
+    }
+    void sortColors(vector<int>& nums) 
+    {
+        int low=0;int high=nums.size()-1;
+        int mid=0;
+        while(low<high && mid<=high)
+        {
+            if(nums[mid]==0)
+            {
+                swap(nums,low,mid);
+                low++;
+                mid++;
+                continue;
+            }
+            else if(nums[mid]==1)
+               {
+                   mid++;
+                   continue;
+               }
+                
+                else
+                {
+                    swap(nums,high,mid);
+                    high--;
+                    continue;
+                }
+            
+            
+        }
+    }
+};

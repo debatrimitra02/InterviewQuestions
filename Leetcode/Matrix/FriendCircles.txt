@@ -1,0 +1,35 @@
+//The people in the friend circle are connected components of a graph.
+//This is essentially finding out the number of disjoint components of a graph
+class Solution {
+public:
+    void DFS(vector<vector<int>>& M, vector<bool>& visited, int node)
+    {
+        int row= M.size();
+        int col = M[0].size();
+        visited[node] = true;
+        for(int j=0; j<col; j++)
+        {
+            if(!visited[j] && M[node][j])
+            {
+                DFS(M, visited, j);
+            }
+        }
+    }
+    int findCircleNum(vector<vector<int>>& M) 
+    {
+        int row= M.size();
+        int col = M[0].size();
+        vector<bool> visited(row, 0);
+        int count =0;
+        //we go row by row and check for all its neighbors and mark them as visited in DFS. They are in the same friend circle
+        for(int i=0; i<row; i++)
+        {
+            if(!visited[i])
+            {
+                count++;
+                DFS(M, visited, i);
+            }
+        }
+        return count;
+    }
+};

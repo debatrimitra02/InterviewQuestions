@@ -1,0 +1,50 @@
+class Point
+{
+    int x;
+    int y;
+}
+
+bool isSafe(int x, int y, int oldColor, vector<vector<int>>& colorMaze)
+{
+    int row= colorMaze.size(); 
+    int col = colorMaze[0].size();
+    return (x>0 && x<row && y>0 && y<col && colorMaze[x][y] == oldColor);
+}
+
+void fillColor(vector<vector<int>>& colorMaze, Point point, int color)
+{
+    int row= colorMaze.size(); 
+    int col = colorMaze[0].size();
+    int oldColor = colorMaze[point.x][point.y];
+    colorMaze[point.x][point.y] = color;
+    int x = point.x;
+    int y = point.y;
+    if(isSafe(x-1, y, oldColor,colorMaze))
+    {
+        Point present = new Point();
+        present.x = x-1;
+        present.y = y;
+        fillColor(colorMaze,present, color);
+    }
+    if(isSafe(x+1, y, oldColor,colorMaze))
+    {
+        Point present = new Point();
+        present.x = x+1;
+        present.y = y;
+        fillColor(colorMaze,present, color);
+    }
+    if(isSafe(x, y-1, oldColor,colorMaze))
+    {
+        Point present = new Point();
+        present.x = x;
+        present.y = y-1;
+        fillColor(colorMaze,present, color);
+    }
+    if(isSafe(x, y+1, oldColor,colorMaze))
+    {
+        Point present = new Point();
+        present.x = x;
+        present.y = y+1;
+        fillColor(colorMaze,present, color);
+    }
+}

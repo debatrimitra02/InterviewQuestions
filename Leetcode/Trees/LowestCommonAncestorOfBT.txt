@@ -1,0 +1,71 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+
+
+//Complexity: O(n)
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor_recur(TreeNode* root, TreeNode* p, TreeNode* q,bool &v1,bool &v2)
+    {
+        if (root == NULL) return NULL;
+        
+        // If either n1 or n2 matches with root's key, report the presence
+         // by setting v1 or v2 as true and return root (Note that if a key
+         // is ancestor of other, then the ancestor key becomes LCA)
+        
+        if(root==p)
+        {
+            v1=true;
+            return root;
+        }    
+        if(root==q)
+        {
+            v2=true;
+            return root;
+        }
+        
+        TreeNode* lca_l=lowestCommonAncestor_recur(root->left,p,q,v1,v2);
+        TreeNode* lca_r=lowestCommonAncestor_recur(root->right,p,q,v1,v2);
+        
+        // If both of the above calls return Non-NULL, then one key
+        // is present in once subtree and other is present in other,
+        // So this node is the LCA
+        if(lca_l!=NULL && lca_r!=NULL)
+            return root;
+        
+        if(lca_l !=NULL)
+            return lca_l;
+        else
+            return lca_r;
+    }
+    bool find(TreeNode *root, TreeNode *p)
+    {
+    	// Base Case
+    	if (root == NULL)
+    		return false;
+    
+    	// If key is present at root, or in left subtree or right subtree,
+    	// return true;
+    	if (root == p || find(root->left, p) || find(root->right, p))
+    		return true;
+    	// Else return false
+    	return false;
+    }
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) 
+    {
+        bool v1=false; 
+        bool v2=false;
+        TreeNode* lca=lowestCommonAncestor_recur(root,p,q,v1,v2);
+        if((v1==true && v2==true) || (v1==true && find(root,q)) || (v2==true && find(root,p)) )
+            return lca;
+        else
+            return NULL;
+    }
+};

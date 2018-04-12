@@ -1,0 +1,56 @@
+class Solution {
+public:
+    
+    bool isSafe(vector<vector<char>> arr, vector<vector<bool> >&visited, int row, int col)
+{
+    int Row = arr.size();
+    int Column = arr[0].size();
+    return (row >= 0 && row < Row && col >=0 && col< Column && arr[row][col] == '1' && !visited[row][col]);
+}
+
+void DFS(vector<vector<char>> arr, vector<vector<bool> >&visited, int row, int col)
+{
+    visited[row][col] = true;
+    
+    for(int i = row-1; i<= row+1; i++)
+    {
+        if(isSafe(arr, visited, i, col))
+                DFS(arr, visited, i, col);
+        
+    }
+        for(int j= col-1; j<= col+1; j++)
+        {
+            if(isSafe(arr, visited, row, j))
+                DFS(arr, visited, row, j);
+        }
+    
+}
+
+    int numIslands(vector<vector<char>>& grid) {
+        if(grid.empty())
+            return 0;
+        int row = grid.size();
+        int column = grid[0].size();
+    
+    std::vector<std::vector<bool>> visited(row, std::vector<bool>(column, false));
+    //memset(visited, false, sizeof(visited));
+    
+    int count=0;
+    
+    for(int i=0; i<row; i++)
+    {
+        for(int j=0; j<column; j++)
+        {
+           if(!visited[i][j] && grid[i][j] == '1')
+           {
+               DFS(grid,visited, i, j);
+               count++;
+           }
+            
+        }
+        
+    }
+   
+    return count;
+    }
+};

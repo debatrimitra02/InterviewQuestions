@@ -1,0 +1,19 @@
+
+1. Island Perimeter 
+2. Maximal Square
+3. 01 Matrix
+4. Island Problem
+5. Fill Color
+6. Count Rectangles
+7. Find if there is a rectangle in binary matrix with corners as 1
+8. Maximal Rectangle
+9. Maximal Rectangle in histogram
+10. Maximal Island Area.
+11. Friend Circle
+12. Game of Life
+13. Surrounded Region
+14. Find all occurrences of a given word in a matrix
+15. Find if a word exists in a matrix
+16. Find if there is a path between source node and destination node in a matrix where you can move in any direction.
+17. Probability of Safe Landing
+18. Zero Matrix

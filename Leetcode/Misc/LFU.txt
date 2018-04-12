@@ -1,0 +1,78 @@
+class LFUCache {
+public:
+    int cap;
+    int minFreq;
+    int size;
+    unordered_map<int, pair<int, int>> keyToValFreq; // <key, <value, freq>>
+    unordered_map<int, list<int>> freqToKeys; //<freq, list<keys>>
+    unordered_map<int, list<int>:: iterator> keyToListIter;
+    LFUCache(int capacity) {
+        
+        cap= capacity;
+        minFreq=0;
+        size=0;
+        
+    }
+    
+    int get(int key) {
+        
+        auto it = keyToValFreq.find(key);
+        if(it == keyToValFreq.end()) //not found
+            return -1;
+        
+        //Step:1 Since freq is increasing delete corresponding key from freqToKeys 
+        //Step2: increase frequency in keyToValFreq
+        //step 3: Update the freqToKeys according to the new frequency.
+        //Step 4: Update keyToListIter to store the new pointer in the list corresponding to the new freq in freqToKeys
+        // --freqToKeys[newFreq].end() this gives the last element of the list. So insert this corresponding to the key in                  keyToListIter
+        //Step 5: Say the minimum freq is 1 and there is one element in that list and now the element gets a hit, so the freq                   becomes 2 with no element with freq 1. 
+        
+        else
+        {
+            int freq = it->second.second;
+            freqToKeys[freq].erase(keyToListIter[key]);
+            keyToValFreq[key].second++;
+            int newFreq = keyToValFreq[key].second;
+            freqToKeys[newFreq].push_back(key);
+            keyToListIter[key] = --freqToKeys[newFreq].end();
+            if(freqToKeys[minFreq].size() == 0)
+                minFreq++;
+            return keyToValFreq[key].first;
+          
+        }
+        
+    }
+    
+    void put(int key, int value) {
+        if(cap<=0) return;
+        int it = get(key);
+        if(it != -1)
+        {
+            keyToValFreq[key].first = value;
+            return;
+        }
+            
+        
+        if(size>=cap)
+        {
+            keyToValFreq.erase(freqToKeys[minFreq].front());
+            keyToListIter.erase(freqToKeys[minFreq].front());
+            freqToKeys[minFreq].pop_front();
+            size--;
+        }
+        keyToValFreq[key].first = value;
+        keyToValFreq[key].second = 1;
+        freqToKeys[1].push_back(key);
+        keyToListIter[key] = --freqToKeys[1].end();
+        size++;
+        minFreq =1;
+        
+    }
+};
+
+/**
+ * Your LFUCache object will be instantiated and called as such:
+ * LFUCache obj = new LFUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */

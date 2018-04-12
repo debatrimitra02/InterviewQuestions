@@ -1,0 +1,29 @@
+class Solution {
+public:
+
+    void swap(vector<int>& nums, int a, int b)
+    {
+        int temp=nums[a];
+        nums[a]=nums[b];
+        nums[b]=temp;
+    }
+    int removeDuplicates(vector<int>& nums) 
+    {
+        int n=nums.size();
+        if(n==0)
+            return 0;
+        int ix=0; int i=0;
+        
+        while(i<n)
+        {
+            while(nums[i]==nums[ix] && i<n) 
+                i++;
+            if(i==n)
+                break;
+            ix++; 
+            swap(nums,ix,i);
+            i++;
+        }
+        return ix+1;
+    }
+};

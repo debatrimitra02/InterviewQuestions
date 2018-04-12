@@ -1,0 +1,23 @@
+
+//Time Complexity: O(k + (n-k)Logk) without sorted output. If sorted output is needed then O(k + (n-k)Logk + kLogk)
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) 
+    {
+            priority_queue<int,vector<int>,less<int> > q; // min
+            for(int i=0;i<nums.size();i++)
+            {
+                if(i<k)
+                    q.push(nums[i]);
+                else
+                {
+                    if(nums[i]>q.top())
+                    {
+                        q.pop();
+                        q.push(nums[i]);
+                    }
+                }
+            }
+            return q.top();
+    }
+};

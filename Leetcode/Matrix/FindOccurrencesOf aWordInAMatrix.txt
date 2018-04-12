@@ -1,0 +1,109 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+/*
+
+Input:
+mat[ROW][COL]= { {'B', 'N', 'E', 'Y', 'S'},
+     	         {'H', 'E', 'D', 'E', 'S'},
+	         {'S', 'G', 'N', 'D', 'E'}
+               };
+Word = “DES”
+Output:
+D(1, 2) E(1, 1) S(2, 0) 
+D(1, 2) E(1, 3) S(0, 4) 
+D(1, 2) E(1, 3) S(1, 4)
+D(2, 3) E(1, 3) S(0, 4)
+D(2, 3) E(1, 3) S(1, 4)
+D(2, 3) E(2, 4) S(1, 4)
+
+*/
+
+
+
+https://www.geeksforgeeks.org/search-a-word-in-a-2d-grid-of-characters/
+
+
+#include <iostream>
+#include<vector>
+
+using namespace std;
+
+bool isValid(vector<vector<char>> matrix, int i, int j, int prevX, int prevY, int currX, int currY)
+{
+    int row = matrix.size();
+    int col = matrix[0].size();
+    return (i >=0 && i< row && j>=0 && j< col && !(i== prevX && j== prevY) && !(i== currX && j==currY));
+}
+
+void DFS(vector<vector<char>> matrix, 
+            string str, 
+            int currX, 
+            int currY, 
+            int prevX, 
+            int prevY, 
+            string s, 
+            int index)
+{
+    int row = matrix.size();
+    int col = matrix[0].size();
+    if(index >= str.length() || matrix[currX][currY] != str[index])
+        return;
+    s = s +  str[index]  + "(" + to_string(currX) + "," + to_string(currY) + "),"  ;
+    if(index == str.length()-1)
+    {
+        cout<<s<<endl;
+        return;
+    }
+       
+    for(int i = currX-1; i<= currX +1; i++)
+    {
+        for(int j = currY-1; j<= currY+1; j++)
+        {
+            if(isValid(matrix, i, j, prevX, prevY, currX, currY))
+            {
+                DFS(matrix, str, i, j, currX, currY, s, index+1);
+            }
+        }
+    }
+    
+}
+
+void findWords(string str, vector<vector<char>> matrix)
+{
+    if(str.length() == 0)
+        return;
+    if(matrix.empty())
+        return;
+    int row = matrix.size();
+    int col = matrix[0].size();
+    for(int i=0; i<row; i++)
+    {
+        for(int j=0; j<col; j++)
+        {
+            if(matrix[i][j] == str[0])
+            {
+                DFS(matrix, str, i, j, -1, -1, "", 0);
+            }
+        }
+    }
+    
+    
+}
+
+
+int main()
+{
+   vector<vector<char>> matrix = { {'B', 'N', 'E', 'Y', 'S'},
+                                   {'H', 'E', 'D', 'E', 'S'},
+                                   {'S', 'G', 'N', 'D', 'E'}
+                        };
+                        
+    string str = "DES";
+    findWords(str, matrix);
+    return 0;
+}
