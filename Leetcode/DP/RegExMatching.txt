@@ -1,0 +1,56 @@
+ 
+
+
+// '.' Matches any single character.
+// ‘*’ Matches zero or more of the preceding element.
+Some examples:
+isMatch("aa","a") → false
+isMatch("aa","aa") → true
+isMatch("aaa","aa") → false
+isMatch("aa", "a*") → true
+isMatch("aa", ".*") → true
+isMatch("ab", ".*") → true
+isMatch("aab", "c*a*b") → true
+
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int row = s.length();
+        int column = p.length();
+        
+        bool arr[row+1][column+1];
+        
+        memset(arr, false, sizeof(arr));
+        
+        arr[0][0] = true;
+        
+                
+        for(int j=1 ; j<=column; j++)
+        {
+            if(p[j-1] == '*')
+                arr[0][j] = arr[0][j-2];
+        }
+        for(int i=1 ; i<=row; i++)
+        {
+            for(int j=1; j<=column; j++)
+            {
+                if((s[i-1] == p[j-1]) || p[j-1] == '.')
+                    arr[i][j] = arr[i-1][j-1];          //s[i-1] == p[j-1] is already a match so we see that removing them from pattern and string the rest of them is a match or not
+
+                
+                else if(p[j-1] == '*')
+                {
+                    arr[i][j] = arr[i][j-2];  //check for 0 occurrence of characters just before * //xa* and x is a match//take two steps back and see if that is true then there is o occurrence 
+                    if(p[j-2] == '.' || p[j-2] == s[i-1])
+                        arr[i][j] = arr[i][j-2] || arr[i-1][j];
+                }
+                    
+                    
+                    else
+                        false;
+            }
+        }
+        return arr[row][column];
+        
+    }
+};

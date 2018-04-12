@@ -1,0 +1,19 @@
+1. Profit Maximize
+2. Longest Common subsequence
+3. Longest Common substring
+4. Optimal Strategy to coin picking game
+5. Minimum number of coins to add unto a value
+6. Wildcard matching
+7. Regular Expression matching
+4. House Robber 1,2,3 
+5. Weighted job scheduling
+6. Unique paths
+7. Special Offer
+8. Dungeon game
+11. Game of Life
+12. probability of safe landing
+13. Best time to buy and sell a stock with 1 transaction allowed
+14. Best time to buy and sell a stock with multiple transactions allowed
+15. Best time to buy and sell a stock with a cool down period
+16. Decode ways
+17. Longest palindromic substring

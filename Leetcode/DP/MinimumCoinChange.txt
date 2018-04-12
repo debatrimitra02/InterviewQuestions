@@ -1,0 +1,26 @@
+//Complexity: O(coins.size()* amount)
+    
+ /*
+ At every point you pick the min between the amount without picking the jth coin and picking the jth coin.
+ T[i] = min(T[i], 1+ T[i-coins[j]])
+ T[i] is value without picking jth coin and i-coins[j] is the remaining amount left if we pick jth coin.
+ So we need the minimum between the two values.
+ 
+ */
+
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+       int Max = amount + 1;
+        vector<int> dp(amount + 1, Max);
+        dp[0] = 0;
+        for (int i = 1; i <= amount; i++) {
+            for (int j = 0; j < coins.size(); j++) {
+                if (coins[j] <= i) {
+                    dp[i] = min(dp[i], dp[i - coins[j]] + 1);
+                }
+            }
+        }
+        return dp[amount] > amount ? -1 : dp[amount];
+    }
+};

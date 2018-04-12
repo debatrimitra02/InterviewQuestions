@@ -1,0 +1,41 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+//complexity: O(n)
+class Solution {
+public:
+    bool isBalanced(TreeNode* root) 
+    {
+        if(root== NULL)
+            return true;
+        int height=0;
+        return  isBalancedRecur(root, &height);
+    }
+    bool isBalancedRecur(TreeNode* root, int* height)
+    {
+        bool l=0;
+        bool r=0;
+        int lh=0;
+        int rh=0;
+        if(root== NULL)
+        {
+            *height = 0;
+             return true;
+        }
+        l = isBalancedRecur(root->left, &lh);
+        r = isBalancedRecur(root->right, &rh);
+        *height = max(lh, rh)+1;
+        if(abs(lh-rh) > 1)
+             return false;
+     
+  /* If this node is balanced and left and right subtrees 
+    are balanced then return true */
+        else return l&r;
+    }
+};

@@ -1,0 +1,61 @@
+/*
+
+Given four lists A, B, C, D of integer values, compute how many tuples (i, j, k, l) there are such that A[i] + B[j] + C[k] + D[l] is zero.
+
+To make problem a bit easier, all A, B, C, D have same length of N where 0 ≤ N ≤ 500. All integers are in the range of -228 to 228 - 1 and the result is guaranteed to be at most 231 - 1.
+*/
+
+class Solution {
+public:
+    int fourSumCount(vector<int>& A, vector<int>& B, vector<int>& C, vector<int>& D) {
+       map<int, int>AB;
+       map<int, int>::iterator itAB= AB.begin();
+       map<int, int>CD;
+        map<int, int>::iterator itCD= CD.begin();
+        int count=0;
+        
+    for(int i=0; i< A.size(); i++)
+    {
+        for(int j=0; j<B.size(); j++)
+        {
+            int sum= A[i] + B[j];
+            itAB= AB.find(sum);
+            if(itAB == AB.end())
+                AB[sum]= 1;
+            else
+            {
+                AB[sum]++;
+            }
+        }
+    }
+    for(int i=0; i< C.size(); i++)
+    {
+        for(int j=0; j<D.size(); j++)
+        {
+            int sum= C[i] + D[j];
+            itCD= CD.find(sum);
+            if(itCD == CD.end())
+                CD[sum]= 1;
+            else
+            {
+                CD[sum]++;
+            }
+        }
+    }
+    for(itAB= AB.begin(); itAB!= AB.end(); itAB++)
+    {
+        int num= itAB->first;
+        itCD= CD.find(-num);
+        if(itCD!= CD.end())
+        {
+            int countAB= itAB->second;
+            int countCD = itCD->second;
+            count += countAB* countCD;
+            
+        }
+        
+    }
+    
+       return count; 
+    }
+};

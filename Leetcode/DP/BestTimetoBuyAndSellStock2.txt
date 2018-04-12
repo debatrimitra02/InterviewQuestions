@@ -1,0 +1,28 @@
+/*
+
+So if you consider the stock graph you will have to capture every inflection point to
+maximize the profit, as in buy when it is low and sell when it is high.
+*/
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) 
+    {
+        if(prices.size()==0)
+            return 0;
+        int i=0;
+        int profit =0;
+        while(i+1< prices.size())
+        {
+	    //if price i is less then i+1th price buy at point i and sell at i+1th 		     instance.So profit is prices[i+1] - prices[i]
+
+            if(prices[i]<prices[i+1])
+            {
+		//selling at prices[i+1] and buying at prices[i]
+                profit = profit + (prices[i+1] - prices[i]);
+            }
+            i++;
+        }
+        return profit;
+    }
+    
+};

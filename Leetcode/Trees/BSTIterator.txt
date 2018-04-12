@@ -1,0 +1,78 @@
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+
+/*
+
+class Tree
+{
+    TreeNode* root;
+    
+    BSTIterator getBSTIterator()
+    {
+        return new BSTIterator(root); //invoking BSTIterator with root
+    }
+    
+    BTIterator getBTIterator()
+    {
+        return new BTIterator(root);
+    }
+}
+
+--------------------------------------------------------------------------------------------------------------------
+More generalized iterator say we want to implement a class which will have the root and should return BST iterator if BST
+or BT iterator if BT. So depending  on whether the client wants BSTIterator or BTIterator it will call invoke any one of the functions.
+
+If you want BTIterator you can call root.getBTIterator()
+
+
+
+*/
+class BSTIterator {
+public:
+    private:
+    stack<TreeNode*> st;
+public:
+    //constructor
+    BSTIterator(TreeNode *root) {
+        find_left(root);
+    }
+
+    /** @return whether we have a next smallest number */
+    bool hasNext() {
+        return (!st.empty());
+    }
+
+    /** @return the next smallest number */
+    int next() {
+        TreeNode* top = st.top();
+        st.pop();
+        if (top->right != NULL)
+            find_left(top->right);
+            
+        return top->val;
+    }
+    
+    /** put all the left child() of root */
+    void find_left(TreeNode* root)
+    {
+        TreeNode* p = root;
+        while (p != NULL)
+        {
+            st.push(p);
+            p = p->left;
+        }
+    }
+};
+
+/**
+ * Your BSTIterator will be called like this:
+ * BSTIterator i = BSTIterator(root);
+ * while (i.hasNext()) cout << i.next();
+ */

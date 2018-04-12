@@ -1,0 +1,68 @@
+#include <iostream>
+#include<algorithm>
+#include<vector>
+
+
+using namespace std;
+struct job
+{
+    int start;
+    int finish;
+    int profit;
+};
+
+bool comparator (job j1, job j2)
+{
+    return j1.finish < j2.finish;
+}
+
+int findLatestNonConflict(vector<job> jobs, int i)
+{
+    for(int j = i-1; j >= 0; j--)
+    {
+        if(jobs[j].finish <= jobs[i].start)
+            return j;
+    }
+    return -1;
+}
+
+int jobScheduling(vector<job> jobs)
+{
+    if(jobs.empty())
+        return 0;
+        
+    if(jobs.size()== 1)
+        return jobs[0].profit;
+        
+    sort(jobs.begin(), jobs.end(), comparator);
+    int size = jobs.size();
+    int profit[size];
+    
+    
+    profit[0] = jobs[0].profit;
+    
+    for(int i=1; i<size; i++)
+    {
+        int inclProfit = 0;
+        inclProfit += jobs[i].profit;
+        
+        int latestJob = findLatestNonConflict(jobs, i);
+        if(latestJob != -1)
+        {
+            inclProfit += profit[latestJob];
+        }
+        int exclProfit = profit[i-1];
+        profit[i] = max(inclProfit, exclProfit);
+    }
+    
+    return profit[size-1];
+   
+}
+
+int main() {
+	vector<job> arr = {{3, 10, 20}, {1, 2, 50}, {6, 19, 100}, {2, 100, 200}};
+	
+	int result = jobScheduling(arr);
+	cout<<result;
+
+}

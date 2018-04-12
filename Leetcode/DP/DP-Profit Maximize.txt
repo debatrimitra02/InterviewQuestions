@@ -1,0 +1,52 @@
+Complexity: O(m*n)
+
+#include <iostream>
+#include<algorithm>
+#include<vector>
+
+
+using namespace std;
+
+int maxProfit(vector<vector<int>> maze)
+{
+    if(maze.empty())
+        return 0;
+        
+    int row = maze.size();
+    int column = maze[0].size();
+    
+    int arr[row][column];
+    
+    for(int i=0; i<row; i++)
+    {
+        for(int j=0 ;j<column; j++)
+        {
+            if(i ==0 && j == 0)
+            {
+                arr[i][j]= maze[i][j];
+            }
+            else if(i == 0)
+            {
+                arr[i][j] = (arr[i][j-1]+ maze[i][j]);
+            }
+            else if(j == 0)
+            {
+                arr[i][j] = (arr[i-1][j] + maze[i][j]);
+            }
+            else
+            {
+                arr[i][j] = max((arr[i][j-1]+ maze[i][j]),(arr[i-1][j] + maze[i][j]));
+            }
+           
+        }
+    }
+    return arr[row-1][column-1];
+}
+
+int main() {
+	vector< vector<int> > V = {{-2, -3, 3}, {-5, -10, -10}, {10, 30, -5}};
+	int result = maxProfit(V);
+	cout<<result;
+
+
+}

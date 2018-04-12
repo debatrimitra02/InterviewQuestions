@@ -1,0 +1,35 @@
+/*  After robbing those houses on that street, the thief has found himself a new place for his thievery so that he will not get too much attention. This time, all houses at this place are arranged in a circle. That means the first house is the neighbor of the last one. Meanwhile, the security system for these houses remain the same as for those in the previous street.
+
+Given a list of non-negative integers representing the amount of money of each house, determine the maximum amount of money you can rob tonight without alerting the police. */
+
+
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int n = nums.size(); 
+        if (n < 2) return n ? nums[0] : 0;
+        return max(robber(nums, 0, n - 2), robber(nums, 1, n - 1));
+    }
+    
+    private:
+    int robber(vector<int>& nums, int l, int r)
+    {
+        int n= r-l;
+        
+        if(n==0)
+            return nums[l];
+        
+        int dp[n+1];
+        memset(dp, 0, sizeof(dp));
+        
+        dp[0] = nums[l];
+        dp[1] = max(nums[l], nums[l+1]);
+        for(int i=2 ; i<=n; i++)
+        {
+           
+            dp[i] = max(dp[i-2]+nums[i+l], dp[i-1]);
+            
+        }
+        return dp[n];
+    }
+};

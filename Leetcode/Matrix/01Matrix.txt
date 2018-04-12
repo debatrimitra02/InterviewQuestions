@@ -1,0 +1,66 @@
+/*  Given a matrix consists of 0 and 1, find the distance of the nearest 0 for each cell.
+
+The distance between two adjacent cells is 1.
+Example 1: 
+Input:
+
+0 0 0
+0 1 0
+0 0 0
+Output:
+0 0 0
+0 1 0
+0 0 0
+
+*/
+
+//Complexity: O(m*n)
+
+
+class Solution {
+public:
+    
+    void findNeighbors(vector<vector<int> >& matrix, queue<pair<int,int>>& zeros, int i, int j, int newi, int newj )
+    {
+        int m = matrix.size();
+        int n = matrix[0].size();
+        
+        if(newi < m && newi >= 0 && newj < n && newj >= 0)
+        {
+                    if(matrix[newi][newj] >= matrix[i][j] + 1)
+                    {
+                        matrix[newi][newj] = matrix[i][j] + 1;
+                        zeros.push({newi,newj});
+                    }
+        }
+    }
+    
+    vector<vector<int> > updateMatrix(vector<vector<int> >& matrix) {
+        if(matrix.empty()) return matrix;
+        int m = matrix.size();
+        int n = matrix[0].size();
+
+        queue<pair<int,int>> zeros;
+
+        for(int i = 0; i < m; ++i){
+            for(int j = 0; j < n; ++j){
+                if(matrix[i][j] == 0){
+                    zeros.push({i,j});
+                }else{
+                    matrix[i][j] = INT_MAX;
+                }
+            }
+        
+        //for every zero do bfs and mark the neighbors
+        while(!zeros.empty()){
+            auto xy = zeros.front();
+            zeros.pop();
+            int i = xy.first, j = xy.second;
+            findNeighbors(matrix, zeros, i, j, i-1, j);
+            findNeighbors(matrix, zeros, i, j, i+1, j);
+            findNeighbors(matrix, zeros, i, j, i, j-1);
+            findNeighbors(matrix, zeros, i, j, i, j+1);
+        }
+        return matrix;
+    }
+};
