@@ -1,0 +1,169 @@
+/**
+
+
+
+    - /foo
+
+        - /images
+
+            - /foo.png
+
+        - /temp
+
+            - /baz
+
+                /that.foo
+
+        - /bar.png
+
+        - /file.tmp
+
+        - /other.temp
+
+        - /blah.txt
+
+
+
+get_duplicates(path) -> list(list(files))
+
+
+
+get_duplicates('/foo')
+
+
+
+
+
+[
+
+   ['/foo/bar.png', '/foo/images/foo.png'],  # These files have the same contents
+
+   ['/foo/file.tmp', '/foo/other.temp', '/foo/temp/baz/that.foo']  # This is a group
+
+]
+
+
+
+list_dir(path) -> list(files)
+
+is_dir(path) -> boolean
+
+*/
+
+
+
+vector<vector<string> findDuplicate(string path)
+
+{
+
+  vector<vector<string> result;
+
+  if(path.empty())
+
+  {
+
+    throw std::InvalidArgumentException("Empty path");
+
+  }
+
+  
+
+  vector<string> fileNames;
+
+  findAllFiles(path. fileNames);
+
+  
+
+  unordered_map<long, vector<string>> fileSizeToFileNamesMap;
+
+  
+
+  for(string fileName: fileNames)
+
+  {
+
+    long fileContentSize = readFileSize(fileName);
+
+    fileSizeToFileNamesMap[fileNameSize].push_back(fileName);
+
+  }
+
+  
+
+  
+
+  for(auto fileContentEntry : fileSizeToFileNamesMap)
+
+  {
+
+    if(fileContentEntry.second.size() > 1)
+
+    {
+
+      //Check Hash here
+
+      unordered_map<long, vector<string>> fileHashToFileNamesMap;
+
+      for(string fileName: fileContentEntry.second)
+
+      {
+
+        long fileHash = calculateHash(fileName);
+
+        fileHashToFileNamesMap[fileHash].push_back(fileName);
+
+      }
+
+      for(auto file2ContentEntry : fileHashToFileNamesMap)
+
+       {
+
+       if(file2ContentEntry.second.size() > 1)
+
+       {
+
+          result.push_back(file2ContentEntry.second);
+
+       }
+
+      }
+
+    }
+
+  }
+
+  
+
+  return result;
+
+  
+
+}
+
+
+
+void findAllFiles(string path, vector<string>& fileNames)
+
+{
+
+  vector<string> childPaths = list_dir(path); //list_dir gives the list of all the child file paths for a given path
+
+  for(string childPath: childPaths)
+
+  {
+
+    if(!is_dir(childPath))
+
+    {
+
+      fileNames.add(childPath);
+
+    }else{
+
+      findAllFiles(childPath, fileNames);
+
+    }
+
+  }
+
+}

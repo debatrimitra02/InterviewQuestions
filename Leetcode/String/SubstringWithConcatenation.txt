@@ -1,0 +1,59 @@
+//Complexity: O(n*l)
+
+class Solution {
+public:
+    vector<int> findSubstring(string s, vector<string>& words) {
+        vector<int> res;
+        if(words.size() == 0)
+            return res;
+        if(s.length() == 0)
+            return res;
+        
+        unordered_map<string, int> map;
+        for(int i=0; i<words.size(); i++) //O(l)
+        {
+            map[words[i]]++;
+        }
+        int m= words[0].length();
+        int n= s.length();
+        int l = words.size();
+        for(int i=0; i<=n-m*l; i++) //O((n-m*l)*(l) = nl - m*l^2
+        {
+            unordered_map<string, int> map2;
+            for(int j=0; j<l; j++)
+            {
+                string str = s.substr(i+ j*m, m);
+                
+                auto it = map.find(str);
+                if(it == map.end())
+                    break;
+                else
+                {
+                   map2[str]++;
+                }
+            }
+            bool flag = true;
+            unordered_map<string, int> :: iterator it1;
+            for(it1 = map.begin(); it1!= map.end(); it1++)
+            {
+                string temp = it1->first;
+                auto it2 = map2.find(temp);
+                
+                //now it has to satisfy two conditions:
+                //1. it is found in the map  2: the freq of the word in both the maps ar the same
+                // If any of them is false return false
+                    if(!(it2 != map2.end() && it1->second == it2->second))
+                    {
+                        flag = false;
+                        break;
+                    }
+                    
+            }
+            if(flag)
+            {
+                res.push_back(i);
+            }
+        }
+        return res;
+    }
+};

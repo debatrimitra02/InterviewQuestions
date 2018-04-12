@@ -1,0 +1,39 @@
+class Solution {
+public:
+    vector<string> restoreIpAddresses(string s) {
+        
+        vector<string> solutions;
+        if(s.empty())
+            return solutions;
+        if(s.length() < 4)
+            return solutions;
+        
+        if(s.length() > 15)
+            return solutions;
+        
+        string res= "";
+        
+        restoreIp(s,solutions,0,res,0);
+        return solutions;
+        
+    }
+    
+  void restoreIp(string ip, vector<string>&solutions, int idx, string restored, int count)
+  {
+      if(count > 4)
+          return;
+      if(count == 4 && idx==(ip.length()))
+          solutions.push_back(restored);
+      
+      for(int i=1; i<4; i++)
+      {
+          if(idx+i > (ip.length()))
+              break;
+          string str = ip.substr(idx, i);
+          
+          if((str.find("0") == 0 && str.length() > 1) || (i==3 && stoi(str) > 255))
+              continue;
+          restoreIp(ip, solutions, idx+i, restored+str+(count == 3 ? "" : "."), count+1);
+      }
+  }
+};

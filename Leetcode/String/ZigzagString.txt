@@ -1,0 +1,62 @@
+//Complexity: numsRows*n
+class Solution {
+public:
+    string convert(string s, int numRows) 
+    {
+        if(s.length()==0 || numRows==1)
+            return s;
+        
+        if(s.length()< numRows)
+            return s;
+        
+        int n= s.length();
+        char grid[numRows][n];
+        memset(grid, '0', sizeof(grid));
+        int i=0; 
+        int j=0;
+        int stri =0;
+        bool flag = true;
+        while(stri< s.length())
+        {
+            if(flag)
+            {
+                for(i=0;i<numRows; i++)
+                {
+                    if(stri< s.length())
+                    {
+                        grid[i][j] = s[stri];
+                        stri++;
+                    }
+                   
+                }
+                flag= false;
+            }
+            else if(!flag)
+            {
+                i= numRows - 2;
+                j++;
+                for(; i>0 && j<n; i--, j++)
+                {
+                    if(stri< s.length())
+                    {
+                        grid[i][j] = s[stri];
+                        stri++;
+                    }
+                }
+                flag= true;
+            }
+            
+        }
+        string res;
+        for(i=0; i<numRows; i++)
+        {
+            for(j=0; j<n; j++)
+            {
+                if(grid[i][j] != '0')
+                    res= res+ grid[i][j];
+            }
+        }
+        return res;
+        
+    }
+};

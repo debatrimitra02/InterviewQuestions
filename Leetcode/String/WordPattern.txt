@@ -1,0 +1,57 @@
+Given a pattern and a string str, find if str follows the same pattern.
+
+Here follow means a full match, such that there is a bijection between a letter in pattern and a non-empty word in str.
+
+Examples:
+pattern = "abba", str = "dog cat cat dog" should return true.
+pattern = "abba", str = "dog cat cat fish" should return false.
+pattern = "aaaa", str = "dog cat cat dog" should return false.
+pattern = "abba", str = "dog dog dog dog" should return false.
+
+class Solution {
+public:
+    bool wordPattern(string pattern, string str) 
+    {
+        int i=0;
+        
+        vector<string> str1;
+        while(i<str.length())
+        {
+            string res;
+            while(i<str.length() && str[i]!=' ')
+            {
+                res = res+ str[i];
+                i++;
+            }
+            str1.push_back(res);
+            i++;
+        }
+        map<string,char> Map;
+        map<string,char>::iterator it=Map.begin();
+        set<char> S;
+        set<char>::iterator x=S.begin();
+        if(str1.size()!=pattern.length())
+            return false;
+        for(int i=0;i<str1.size();i++)
+        {
+            it=Map.find(str1[i]);
+            if(it==Map.end())
+            {
+                x=S.find(pattern[i]);
+                if(x==S.end())
+                {
+                    Map[str1[i]]=pattern[i];
+                    S.insert(pattern[i]);
+                }
+                else
+                    return false;
+            }
+            else
+            {
+                if(it->second!=pattern[i])
+                    return false;
+            }
+        }
+        return true;
+    }
+};

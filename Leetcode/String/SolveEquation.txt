@@ -1,0 +1,80 @@
+class Solution {
+public:
+    void calculate(string str, int& numVal, int& xNum)
+    {
+        int sign = 1;
+        int res=0;
+        int resX=0;
+        int num =0;
+        for(int i=0; i<str.length(); i++)
+        {
+            while(str[i]== ' ' && i<str.length())
+                i++;
+            num =0;
+            bool isNumPrefix = false;
+            if(isdigit(str[i]))
+            {
+                isNumPrefix = true;
+                
+                while(isdigit(str[i])&& i < str.length())
+                {
+                    num = num*10 + (str[i]-'0');
+                    i++;
+                }
+            }
+            
+            //after we build the number we have to check if the next char is a sign or x. If it is a sign we add/subtract it to/from res. If it is x then we add it to resx  
+            
+            if(str[i] == '+')
+            {
+                res += num*sign;
+                sign = 1;
+            }
+            if(str[i] == '-')
+            {
+                res += num*sign;
+                sign = -1;
+            }
+            if(str[i] == 'x')
+            {
+                if(num==0 && !isNumPrefix) //we need the to use this bool flag just for this case: 0x=0 => Infinite solutions
+                                            // this is a totally redundant edge case
+                    num=1;
+                resX += num* sign;
+                num=0;
+            }
+        }
+        
+        res += num*sign;
+        numVal = res;
+        xNum = resX;
+    }
+    string solveEquation(string equation) {
+        if(equation.length()==0)
+            return "No solution";
+        int divIndex = equation.find("=");
+        string LHS = equation.substr(0, divIndex);
+        
+        string RHS = equation.substr(divIndex+1);
+        int leftNum =0;
+        int leftX =0;
+        int rightNum=0;
+        int rightX=0;
+        calculate(LHS, leftNum, leftX);
+        calculate(RHS,rightNum, rightX);
+        int top = rightNum-leftNum;
+        int bottom = leftX- rightX;
+        if(bottom == 0 && top==0)
+        {
+            return "Infinite solutions";
+        }
+        else if(bottom==0 && top!=0)
+        {
+            return "No solution";
+        }
+        int x = (rightNum-leftNum)/(leftX- rightX);
+        
+        return ("x="+ to_string(x));
+        
+    }
+};

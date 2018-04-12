@@ -1,0 +1,32 @@
+class Solution {
+public:
+
+
+    int findMinimum(vector<int>& nums, int low, int high)
+    {
+       if(high<low) //no rotation found
+        return nums[0];
+    
+        if(high==low) //only one element present in array
+            return nums[low];
+            
+        int mid=low+(high-low)/2;
+            
+        if(nums[mid+1]<nums[mid] && mid<high)
+            return nums[mid+1];
+            
+        if(nums[mid-1]>nums[mid] && mid>low)
+            return nums[mid];
+          //we cannot do nums[low] > nums[mid] coz then it will not handle the case when the array is sorted but not rotated.
+        if(nums[high]>nums[mid]) // This even handles the case when the array is sorted but not rotated.
+            return findMinimum(nums,low,mid-1);
+        else
+            return findMinimum(nums, mid+1, high);
+    }
+    
+    int findMin(vector<int>& nums) {
+        int n=nums.size();
+        int minimum=findMinimum(nums,0,n-1);
+        return minimum;
+    }
+};

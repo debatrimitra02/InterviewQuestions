@@ -1,0 +1,84 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+
+using namespace std;
+int primeNumber = 101;
+vector<int> fileStringSearch(String target, String filePath) {
+  
+      vector<int> indexes;
+      
+      //string::iterator fileStream = file.stream(filePath);
+	ifstream inFile;
+	inFile.open(“path”);
+	
+      
+      int patternLength = target.length();
+      
+      vector<char> V(patternLength);
+      
+      int i=0;
+      
+      int patternHash = calculateHash(target);
+      int textHash = 0;
+      int maxMatchCount = 0;
+      
+      while(inFile >> fileStream)
+      {
+          while(i < patternLength && fileStream.hasNext())
+          {
+              V.push_back(fileStream);
+              i++;
+          }
+          
+          string text = getString(V);
+          
+          textHash = textHash == 0? calculateHash(text) : textHash;
+          
+          if( patternHash == textHash && isMatch(text, pattern))
+              indexes.push_back(i - patternLength);
+          
+          char oldChar = V[0];
+          V.pop_front();
+          
+          if(fileStream.hasNext())
+          {
+              V.push_back(fileStream.next());
+              char newChar = V.back();
+              // Rolling hash
+              textHash = reCalculateHash(testHash, oldChar, newChar, patternLength)
+              
+          }
+          i++; 
+      } 
+          
+      return indexes;
+
+  }
+
+long calculateHash(string str)
+{
+    long hash = 0;
+    for(int i=0; i<str.length(); i++)
+    {
+        hash = hash + pow(primeNumber,i)*str[i];
+    }
+    return hash;
+}
+
+long reCalculateHash(long oldHash, char oldChar, char newChar, int patternLength)
+{
+    long newHash = oldHash - oldChar;
+    newHash = newHash/primeNumber;
+    newHash = newHash + pow(primeNumber,patternLength-1)*newChar;
+    return newHash;
+}
+
+
+

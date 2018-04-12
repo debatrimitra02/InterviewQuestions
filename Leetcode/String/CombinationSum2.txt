@@ -1,0 +1,66 @@
+/*
+
+Given a collection of candidate numbers (C) and a target number (T), find all unique combinations in C where the candidate numbers sums to T.
+
+Each number in C may only be used once in the combination.
+
+Note:
+All numbers (including target) will be positive integers.
+The solution set must not contain duplicate combinations.
+For example, given candidate set [10, 1, 2, 7, 6, 1, 5] and target 8, 
+A solution set is: 
+[
+  [1, 7],
+  [1, 2, 5],
+  [2, 6],
+  [1, 1, 6]
+]
+
+*/
+
+class Solution {
+public:
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+      vector<vector<int>> result;
+        if(candidates.empty())
+            return result;
+        
+        vector<int> state;
+        
+        sort(candidates.begin(), candidates.end());
+        sumRecursive(candidates, state, result, target, 0);
+        return result;
+    }
+    
+    void sumRecursive(vector<int>& candidates, vector<int>& currentState, vector<vector<int>>& result, int target, int start)
+    {
+        if(target == 0)
+        {
+            bool flag;
+            for(int i=0; i<result.size();i++)
+            {
+                flag = true;
+                vector<int> V = result[i];
+                if(V == currentState)
+                {
+                    flag = false;
+                    break;
+                }
+            }
+            if(flag)
+            {
+                result.push_back(currentState);
+            }
+        }
+        
+        if(target < 0)
+            return;
+        
+        for(int i=start; i<candidates.size(); i++)
+        {
+            currentState.push_back(candidates[i]);
+            sumRecursive(candidates,currentState, result, target-candidates[i], i+1);
+            currentState.pop_back();
+        }
+    }
+};

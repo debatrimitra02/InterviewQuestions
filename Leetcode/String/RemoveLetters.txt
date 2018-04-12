@@ -1,0 +1,31 @@
+//Complexity: worst case is O(n^2) if all the elements in result is less than the each current element lexicographically, then you will have to remove all elements from the result and insert the new element
+//For example: fedcbabcdef => so here you will have to remove each element to get abcdef
+
+//Average case: O(n)
+
+class Solution {
+public:
+    string removeDuplicateLetters(string s) {
+      vector<int> cand(256, 0);
+    vector<bool> visited(256, false);
+    for (char c : s)
+        cand[c]++;
+    string result;
+    for (char c : s) 
+    {
+        cand[c]--;
+        if (visited[c]) continue;
+        
+        //if c is less than the last element in the result lexicographically remove the last element, but if the last element             //becomes zero(freq), then don't remove it as it is the only occurrence of that element. For example in "cbacdcbc" c<d           //but we cannot remove d from the result as d appears only once, so removing d will give abc whereas the right result is         //   abcd
+        
+        while (c < result.back() && cand[result.back()] > 0 ) 
+        {
+            visited[result.back()] = false;
+            result.pop_back();
+        }
+        result += c;
+        visited[c] = true;
+    }
+    return result;  
+    }
+};

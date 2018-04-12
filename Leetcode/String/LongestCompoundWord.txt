@@ -1,0 +1,119 @@
+
+class TrieNode 
+{
+    public:
+    // Initialize your data structure here.
+    map<char, TrieNode* > children;
+    bool EOS;
+
+    TrieNode() 
+    {
+        children.clear();
+        bool EOS = false;
+    }
+};
+
+class Trie 
+{
+private:
+    TrieNode* root;
+
+public:
+    Trie() 
+    {
+        this->root = new TrieNode();
+    }
+
+    // Inserts a word into the trie.
+    void insert(string word) 
+    {
+        if(word.length() == 0)
+        {
+            return;
+        }
+        
+        TrieNode* current = this->root;
+
+        for(int i=0; i < word.length(); i++)
+        {
+           char ch = word[i];
+           auto it = current->children.find(ch);
+           
+           if(it == current->children.end())
+           {
+               TrieNode* node = new TrieNode();
+               current->children[ch] = node;
+               current = node;
+           }
+           
+           else { current = it->second; }
+        }
+        current->EOS = true;       
+    }
+    
+    bool searchWord(string word, bool isChild)
+    {
+        TrieNode* current = this->root;
+        for(int i=0; i<word.length(); i++)
+        {
+            char ch = word[i];
+            auto it= current->children.find(ch);
+            if(it != current->children.end())
+            {
+                current = it->second;
+            }
+            else
+            {
+                return false;
+            }
+                
+
+            if(current->EOS) 
+            {
+                if(i== (word.length() - 1) && isChild )
+                {
+                   return true; 
+                } 
+                
+                if( i== (word.length() - 1))
+                {
+                    return false;
+                }
+
+                string str = word.substr(i+1);
+                bool res = searchWord(str, true);
+
+                if(res)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+};
+
+class Solution {
+public:
+    int count=0;
+    
+    vector<string> findAllConcatenatedWordsInADict(vector<string>& words) {
+        vector<string> res;
+        if(words.size() == 0)
+            return res;
+        Trie* trie = new Trie();
+        for(int i=0; i<words.size(); i++)
+        {
+            trie->insert(words[i]);
+        }
+        for(int i=0; i<words.size(); i++)
+        {
+            cout<<words[i]<<endl;
+            count = 0;
+           bool found = trie->searchWord(words[i],false);
+           if(found)
+               res.push_back(words[i]);
+        }
+        return res;
+    }
+};

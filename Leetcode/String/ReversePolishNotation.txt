@@ -1,0 +1,51 @@
+class Solution {
+public:
+    int evalRPN(vector<string>& tokens) 
+    {
+        if(tokens.empty())
+            return 0;
+        stack<int> S;
+        for(int i=0; i<tokens.size(); i++)
+        {
+            char c =tokens[i][0];
+            //because any number can be a negative number, 
+            //so by  checking that tokens[i].length() == 1 we are ensuring that it is not -2, say
+            if((c == '+' || c == '-' || c=='*' || c=='/') && tokens[i].length() == 1) 
+            {
+                int result;
+                int top1 = S.top();
+                S.pop();
+                int top2 = S.top();
+                S.pop();
+                if(c == '+')
+                {
+                    result = top1 + top2;
+                }
+                else if (c == '-')
+                {
+                    result = top2 - top1;
+                }
+                else if(c == '*')
+                {
+                    result = top1 * top2;
+                }
+                else if (c == '/')
+                {
+                    result = top2/top1;
+                }
+                
+                S.push(result); 
+            }
+            
+            else
+            {
+                int num = stoi(tokens[i]);
+                S.push(num);
+            }
+            
+        }
+        
+        return S.top();
+ 
+    }
+};

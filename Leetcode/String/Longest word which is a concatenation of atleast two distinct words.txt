@@ -1,0 +1,99 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+//Longest word which is a concatenation of atleast two distinct words
+
+#include <iostream>
+#include<vector>
+#include<algorithm>
+#include<string>
+#include<climits>
+#include<set>
+
+using namespace std;
+
+bool searchNext(set<string> wordList, string word)
+{
+    for(int i=0; i<word.length(); i++)
+    {
+        string prefix = word.substr(0, i+1);
+        auto it = wordList.find(prefix);
+        
+        //if suffix is found we can return true here itself and we don't need to check further 
+        //because it consists of atleast two words
+        
+        if(it != wordList.end())
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+string longestConcatenatedWord(vector<string> & words)
+{
+    if(words.size() == 0)
+    {
+        return "";
+    }
+    
+    int maxLength = INT_MIN;
+    int longestWordIndex = 0;
+    set<string> wordList;
+    for(int i=0; i<words.size(); i++)
+    {
+        wordList.insert(words[i]);
+    }
+    for(int i=0; i<words.size(); i++)
+    {
+        string word = words[i];
+        for(int j=0; j< word.length(); j++)
+        {
+            string prefix = word.substr(0, j+1);
+            
+            if(j== word.length()-1)
+            {
+                break;
+            }
+            
+            auto it = wordList.find(prefix);
+            
+            if(it != wordList.end())
+            {
+                string suffix = word.substr(j+1);
+                bool childFound = searchNext(wordList, suffix);
+                if(childFound)
+                {
+                    int length = word.length();
+                    if(length > maxLength)
+                    {
+                        maxLength= length;
+                        longestWordIndex = i;
+                    }
+                }
+            }
+        }
+    }
+    
+    if(maxLength != INT_MIN)
+        return words[longestWordIndex];
+    return "";
+}
+
+int main()
+{
+    vector<string> words;
+    words.push_back("catsdogscats");
+    words.push_back("cats");
+    words.push_back("dogs");
+    words.push_back("catsdogscowspigs");
+    string word =  longestConcatenatedWord(words);
+    cout<<word;
+}
+
+
+

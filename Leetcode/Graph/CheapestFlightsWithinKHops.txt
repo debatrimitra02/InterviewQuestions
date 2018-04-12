@@ -1,0 +1,81 @@
+/*
+
+Example 1:
+Input: 
+n = 3, edges = [[0,1,100],[1,2,100],[0,2,500]]
+src = 0, dst = 2, k = 1
+Output: 200
+
+The cheapest price from city 0 to city 2 with at most 1 stop costs 200, as marked red in the picture.
+
+*/
+
+
+class Solution {
+  
+struct GraphNode
+{
+    int val;
+    int hops;
+    int fare;
+};
+    
+struct Comparator
+{
+  bool operator()(const GraphNode* lhs, const GraphNode* rhs)
+  {
+    return lhs->fare > rhs->fare;
+  }
+};
+   
+public:
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int K) {
+        unordered_map<int, vector<pair<int, int>>> graph; // key: sourceNode and value is the list of destNodes and fares
+        
+        for(int i=0; i<flights.size(); i++)
+        {
+            graph[flights[i][0]].push_back(make_pair(flights[i][1], flights[i][2]));
+        }
+        
+        //creating a minHeap to keep track of the cheapest fares
+        priority_queue<GraphNode*, vector<GraphNode*>, Comparator> toVisit;
+        set<int> visited;
+        
+        struct GraphNode* node = (struct GraphNode*)malloc(sizeof(struct GraphNode));
+        node->val = src;
+        node->hops = 0;
+        node->fare = 0;
+        
+        toVisit.push(node);
+        visited.insert(src);
+        
+        while(!toVisit.empty())
+        {
+            node = toVisit.top();
+            
+            toVisit.pop();
+            if(node->val == dst)
+                return node->fare;
+            
+            //if at any point the hops become greater than k ignore that path i.e don't consider it's neighbors and continue with               other paths
+            if(node->hops > K)
+            {
+                continue;
+            }
+            
+            vector<pair<int, int>> temp = graph[node->val];
+            for(int i=0;i<temp.size();i++)
+            {
+                if(visited.find(temp[i].first) == visited.end())
+                {
+                    struct GraphNode* next = (struct GraphNode*)malloc(sizeof(struct GraphNode));
+                    next->val = temp[i].first;
+                    next->hops = node->hops + 1;
+                    next->fare = node->fare + temp[i].second;
+                    toVisit.push(next);
+                }
+            }
+        }
+        return -1;
+    }
+};

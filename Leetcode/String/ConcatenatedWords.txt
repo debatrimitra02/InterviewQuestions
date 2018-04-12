@@ -1,0 +1,60 @@
+class Solution {
+public:
+    bool searchChild(set<string> wordList, string suffix)
+    {
+        //suffix => dogcats
+        for(int i=0; i<suffix.length(); i++)
+        {
+           string prefix = suffix.substr(0, i+1);
+            auto it = wordList.find(prefix);
+            
+            if(it != wordList.end())
+            {
+                if(i == suffix.length()-1)
+                {
+                    return true;
+                }
+                else
+                {
+                    string str = suffix.substr(i+1);
+                    if(searchChild(wordList,str))
+                        return true;
+                }
+                
+            }
+        }
+        return false;
+    }
+    
+    vector<string> findAllConcatenatedWordsInADict(vector<string>& words) 
+    {
+        vector<string> result;
+        set<string> wordList;
+        for(int word=0; word<words.size(); word++)
+        {
+            wordList.insert(words[word]);
+        }
+        for(int i=0; i<words.size(); i++)
+        {
+            string word = words[i]; //catsdogcats
+            for(int j=0; j<word.length(); j++)
+            {
+                string prefix = word.substr(0, j+1);
+                auto it = wordList.find(prefix);
+                if(j== word.length()-1)
+                    break;
+                if(it != wordList.end())
+                {
+                    string suffix = word.substr(j+1);
+                    bool childFound = searchChild(wordList, suffix);
+                    if(childFound)
+                    {
+                        result.push_back(words[i]);
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+};

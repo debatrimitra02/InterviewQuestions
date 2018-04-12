@@ -1,0 +1,131 @@
+/*
+
+s = "3[a]2[bc]", return "aaabcbc".
+s = "3[a2[c]]", return "accaccacc".
+s = "2[abc]3[cd]ef", return "abcabccdcdcdef".
+*/
+
+//Complexity: O(n)
+
+
+
+/*
+Every time we meet a ‘[’, we treat it as a subproblem so call our recursive function to get the content in that ‘[’ and ‘]’. After that, repeat that content for ‘num’ times.
+Every time we meet a ‘]’, we know a subproblem finished and just return the ‘word’ we got in this subproblem.
+Please notice that the ‘pos’ is passed by reference, use it to record the position of the original string we are looking at.
+*/
+
+
+class Solution {
+public:
+//      string decodeString(const string& s, int& i) {
+//         string res;
+        
+//         while (i < s.length() && s[i] != ']') {
+//             if (!isdigit(s[i]))
+//                 res += s[i++];
+//             else {
+//                 int n = 0;
+//                 while (i < s.length() && isdigit(s[i]))
+//                     n = n * 10 + s[i++] - '0';
+//                 //skip opening bracket  
+//                 i++; // '['
+//                 string t = decodeString(s, i);
+//                 //skip closing bracket
+//                 i++; // ']'
+                
+//                 while (n-- > 0)
+//                     res += t;
+//             }
+//         }
+        
+//         return res;
+//     }
+
+    bool isNum(string s)
+    {
+        for(int i=0; i<s.length(); i++)
+        {
+            if(!isdigit(s[i]))
+                return false;
+        }
+        return true;
+    }
+    string decodeString(string s) {
+        //int i = 0;
+        //return decodeString(s, i);
+        
+        if(s.length() == 0)
+            return "";
+        stack<string> S;
+        string finalRes;
+        string res;
+        
+        for(int i=0; i<s.length(); i++)
+        {
+            if(isdigit(s[i]))
+            {
+                int num = 0;
+                while(i<s.length() && isdigit(s[i]))
+                {
+                    num = num*10 + (s[i] - '0');
+                    i++;
+                }
+                S.push(to_string(num));
+            }
+            string ss;
+            if(s[i] != '[' && s[i] != ']')
+            {
+                ss += s[i];
+                S.push(ss);
+            }
+            
+            if(s[i] == ']')
+            {
+                string temp;
+                while(!S.empty() && !isNum(S.top()))
+                {
+                    temp = S.top() + temp;
+                    S.pop();
+                }
+                int count = 0;
+                if(isNum(S.top()))
+                {
+                    string s = S.top();
+                    count = stoi(s);
+                    S.pop();
+                }
+                while(count > 0)
+                {
+                    res = res + temp;
+                    count--;
+                }
+                
+                if(!S.empty())
+                {
+                    S.push(res);
+                    res = "";
+                    temp = "";
+                }
+                else
+                {
+                    // "3[a]2[b4[F]c]"
+                    finalRes = finalRes + res;
+                    res="";
+                }
+            }
+        }
+        
+        //now we need to check that if there is any remaining string after the last ']', if so add them to the resultant string
+        //for ex: 3[a]2[bc]e => after the for loop we will have finalRes = aaabcbc  and e will be in the stack, so we need to add          //that to get aaabcbce
+        
+        string temp="";
+        while(!S.empty())
+        {
+            temp = S.top() + temp;
+            S.pop();
+        }
+        finalRes = finalRes + temp;
+        return finalRes;
+    }
+};

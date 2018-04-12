@@ -1,0 +1,97 @@
+/* Given a sorted array, two integers k and x, find the k closest elements to x in the array. The result should also be sorted in ascending order. If there is a tie, the smaller elements are always preferred.   */
+//Complexity: O(k+ logn)
+
+class Solution {
+public:
+    
+    int findInflectionPoint(vector<int>& arr, int k, int x, int start, int end)
+    {
+        if(start >= end)
+            return start;
+        
+        int mid = (start + end)/2;
+        
+        if(arr[mid] == x)
+        {
+            return mid;
+        }
+       
+        if(arr[mid] > x)
+            return findInflectionPoint(arr,  k, x, start, mid-1);
+        else
+            return findInflectionPoint(arr, k, x, mid+1, end);
+    }
+    
+    
+    void findClosestElementsRecur(vector<int>& arr, vector<int>& closest, int k, int x, int inflection)
+    {
+        int start = inflection-1;
+        int end = inflection;
+        int count =0;
+        while(start >= 0 && end <= arr.size()-1 && count < k)
+        {
+            if(abs(x-arr[start]) <= abs(x-arr[end]))
+            {
+                closest.push_back(arr[start]);
+                start --;
+            }
+            else
+            {
+                closest.push_back(arr[end]);
+                end++;
+            }
+            count++;
+            
+        }
+        
+        while(count < k)
+        {
+            if(start >= 0)
+            {
+                closest.push_back(arr[start]);
+                start --;
+            }
+            else if(end <= arr.size()-1)
+            {
+                closest.push_back(arr[end]);
+                end++;
+                
+            }
+            count++;
+        }
+    }
+    
+    vector<int> findClosestElements(vector<int>& arr, int k, int x) {
+    
+        vector<int> closest;
+        if(arr.size() == 0 || k==0)
+            return closest;
+        if(k > arr.size())
+            closest = arr;
+        int n = arr.size()-1;
+        if(x > arr[n])
+        {
+            for(int i= n-k+1; i<= n; i++)
+                closest.push_back(arr[i]);
+            
+            return closest;
+        }
+        if(x < arr[0])
+        {
+            for(int i = 0; i< k; i++)
+                closest.push_back(arr[i]);
+            
+            return closest;
+        }
+        
+        int inflection = findInflectionPoint(arr, k, x, 0, n);
+        cout<< inflection;
+        
+        findClosestElementsRecur(arr, closest, k, x, inflection);
+        
+        sort(closest.begin(), closest.end());
+        
+        return closest;
+        
+    }
+};

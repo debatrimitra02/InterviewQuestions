@@ -1,0 +1,144 @@
+class Solution {
+public:
+bool validIpV6 (string str)
+{
+  //(String.Compare(ip, Null) || String.Compare(ip, ' ')
+  //   return false;
+  if (str.empty())
+    {
+      return false;
+    }
+
+  if (str.length() > 39)
+    {
+      return false;
+    }
+
+  int high = 0;
+  int count = 0;
+  while (high < str.length())
+  {
+      while (str[high] == ' ')
+	    {
+    	  high++;
+    	}
+
+      int innerCount = 0;
+      while (str[high] != ':' && high < str.length())
+	{
+
+	  if ( isdigit(str[high]) ||
+	      ('a' <= (str[high]) && (str[high]) <= 'f') ||
+	      ('A' <= (str[high]) && (str[high]) <= 'F'))
+	    {
+	      	  high++;
+          	  innerCount++;
+                if(innerCount > 4)
+                {
+                  return false;
+                }
+	    }
+	  else
+	    {
+	      return false;
+
+	    }
+	}
+      if(innerCount == 0)
+      {
+          return false;
+      }
+      count++;
+      if (count > 8 ||(count == 8 && high < str.length())){
+	    return false;
+      }
+      high++;
+    }
+    
+    if(count !=8)
+    {
+        return false;
+    }
+    return true;
+}
+    
+bool validIpV4(string ip)
+{
+    if (ip.empty())
+    {
+      return false;
+    }
+    if(ip.length() > 15)
+	return false;
+    
+    int high=0;
+    int nums=0;
+    int count=0;
+
+    while(high <= (ip.length() - 1))
+    {
+        while(ip[high] == NULL || ip[high]==' ')
+            high++;
+        
+        int innerCount = 0;
+        while(ip[high] != '.' && (high <= (ip.length() - 1)))
+        {
+              
+            char c = ip[high];
+            if(!isdigit(c))
+            {
+                return false;
+            }
+                
+            nums=nums*10 + (c - '0');
+            
+            if(nums == 0)
+            {
+                if(!((high) == (ip.length()-1) || ip[high+1] == ‘.’))
+                {
+                    return false;
+                }
+
+	     }
+            high++; 
+            innerCount++;
+        }
+        
+        if(innerCount == 0)
+      {
+          return false;
+      }
+        
+        count++;
+        if(count>4 ||(count == 4 && high < ip.length()))
+                return false;
+        
+        if(nums<0 || nums>255)
+            return false;
+        
+        high = high+1;
+        nums = 0;
+         
+    }
+    
+    if(count != 4)
+    {
+        return false;
+    }
+    
+    return true;
+}
+
+
+    string validIPAddress(string IP) {
+        
+        if(validIpV4(IP) )
+           return "IPv4";
+           
+         else if(validIpV6(IP))
+           return "IPv6";
+           else
+             return "Neither";
+       
+    }
+};

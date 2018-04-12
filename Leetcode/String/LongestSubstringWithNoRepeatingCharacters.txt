@@ -1,0 +1,40 @@
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int maxLength = 0;
+        int presentLength = 0;
+        int start = 0;
+        
+        int i=0;
+        unordered_map<char, int>charMap;
+        while(i< s.length())
+        {
+            auto it = charMap.find(s[i]);
+            
+            if(it == charMap.end() || it->second < start)
+            {
+                charMap[s[i]] = i;
+                presentLength++;
+            }
+            else
+            {
+                
+                if(presentLength > maxLength)
+                {
+                    maxLength = presentLength;
+                }
+                
+               start = it->second + 1;
+               presentLength = i - start + 1;
+                charMap[s[i]] = i; //update index of the character with the latest index where it is found.
+               
+            }
+            i++;
+        }
+        if(presentLength > maxLength)
+        {
+            maxLength = presentLength;
+        }
+       return  maxLength;
+    }
+};

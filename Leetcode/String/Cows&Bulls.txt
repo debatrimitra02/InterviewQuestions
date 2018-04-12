@@ -1,0 +1,40 @@
+Secret number:  "1807"
+Friend's guess: "7810"
+Hint: 1 bull and 3 cows. (The bull is 8, the cows are 0, 1 and 7.)
+
+class Solution {
+public:
+    string getHint(string secret, string guess) {
+        int bulls=0;
+        int cows=0;
+        string res;
+        int index[10];
+        memset(index, 0, sizeof(index));
+        
+        for(int i=0; i<secret.length(); i++)
+        {
+            int ix = secret[i] - '0';
+            if(secret[i] == guess[i])
+                bulls++;
+            else
+                index[ix]++;
+            
+        }
+        for(int i=0; i< guess.length(); i++)
+        {
+            
+            if(secret[i] != guess[i]){
+           
+                int guessx = guess[i] - '0';
+                if(index[guessx] > 0)
+                {
+                    cows++;
+                    index[guessx]--;
+                }
+            }
+        }
+        res = to_string(bulls) + 'A' + to_string(cows) + 'B';
+        return res;
+        
+    }
+};

@@ -1,0 +1,97 @@
+#include <iostream>
+#include<string>
+#include<stack>
+
+using namespace std;
+
+
+int isOperand(char ch)
+{
+    return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
+}
+
+int prec(char ch)
+{
+  switch(ch)
+  {
+    case '+':
+    case '-':
+      return 1;
+      
+    case '*':
+    case '/':
+        return 2;
+ 
+    case '^':
+        return 3;
+  }
+  return -1;
+}
+
+
+string infixToPostfix(string& expr)
+{
+  if(expr.length() == 0)
+    return false;
+    
+  string res;
+  
+  
+  stack<char> S;
+  
+  for(int i=0; i<expr.length(); i++)
+  {
+    //if it is an operand add it to the result;
+        if(isOperand(expr[i]))
+        {
+          res += expr[i];
+        }
+        
+        else if(expr[i] == '(')
+        {
+          S.push(expr[i]);
+        }
+        else if(expr[i] == ')')
+        {
+          while(!S.empty() && S.top()!= '(')
+          {
+            res += S.top();
+            S.pop();
+          
+          }
+          
+          if(!S.empty() && S.top() != '(')
+          {
+            //invalid & unbalanced expression
+            return "";
+          }
+          
+          //Now pop "(" from the stack
+          S.pop();
+        }
+      else //an operand is encountered
+      {
+        while(!S.empty() && prec(expr[i]) <= prec(S.top()))
+        {
+          res += S.top();
+          S.pop();
+        }
+        S.push(expr[i]);
+      }
+  }
+  
+  while(!S.empty())
+  {
+    res += S.top();
+    S.pop();
+  }
+  
+  return res;
+}
+
+int main() 
+{
+  string expr = "(A*B+C)/(D-E)";
+  string res = infixToPostfix(expr);
+  cout<<res;
+}
