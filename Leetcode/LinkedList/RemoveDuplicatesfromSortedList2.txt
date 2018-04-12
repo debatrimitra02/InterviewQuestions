@@ -1,0 +1,55 @@
+
+//Given 1->2->3->3->4->4->5, return 1->2->5.
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if(!head)   return NULL;
+        // dummy node is required if the value in head is repeating and we need to delete and update head
+        ListNode* dummy=new ListNode(INT_MAX);
+        dummy->next=head;
+        ListNode* pre=dummy, *cur=head, *next=head->next;
+        bool flag=false;
+        while(next)
+        {
+            //we will move next till the values of cur and next matches and set the flag. After that if flag is true
+            // we make prev->next as next and delete all repeating nodes
+            if(next->val==cur->val)
+            {
+                flag=true;
+                next=next->next;
+            }
+            else
+            {
+                if(flag)
+                {
+                    pre->next=next;
+                    cur=next;
+                    next=next->next;
+                    //reset flag after deletion
+                    flag=false;
+                }
+                else
+                {
+                    //pre only gets updated if there is a mismatch
+                    // 1->1->1->2->2->3->4->5->5
+                    pre=pre->next;
+                    cur=cur->next;
+                    next=next->next;
+                }
+               
+            }
+        }
+        //the corner cases : if the duplicate number locates at the end next will become null and hence it will not go inside the       while loop, so we will have to update it outside the while loop
+        if(flag) pre->next=next;
+        return dummy->next;
+    }
+};

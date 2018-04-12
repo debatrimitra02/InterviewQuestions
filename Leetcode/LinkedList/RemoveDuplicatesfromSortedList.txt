@@ -1,0 +1,37 @@
+
+//Given 1->1->2, return 1->2.
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if(head== NULL)
+            return NULL;
+        ListNode* current = head;
+        ListNode* next;
+        while(current!=NULL && current-> next != NULL)
+        {
+            if(current->val == current->next->val)
+            {
+                //delete current->next
+                next = current->next;
+                current->next= next->next;
+                delete(next);
+                //after deleting the next element of current don't increase current because it will skip elements for odd no of                     repititions
+            }
+            else 
+            {
+                current= current->next;
+            }
+        }
+        return head;
+    }
+    
+};

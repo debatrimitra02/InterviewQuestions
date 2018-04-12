@@ -1,0 +1,77 @@
+class Solution {
+public:
+        bool binarySearch(vector<vector<int>>& matrix, int row, int startCol, int endCol, int target)
+    {
+        while(startCol <= endCol)
+        {
+            int midCol = (startCol + endCol)/2;
+            if(matrix[row][midCol] == target)
+                return true;
+            
+            else if(matrix[row][midCol] < target)
+                startCol = midCol+1;
+            
+            else
+                endCol = midCol-1;
+        }
+        return false;
+    }
+    bool matrixBinarySearch(vector<vector<int>>& matrix, int row, int column, int target)
+    {
+        if(row == 1)
+            return binarySearch(matrix, 0, 0, column-1, target);
+        int colMid = column/2;
+        int rowLow = 0;
+        int rowHigh = row-1;
+        while((rowLow +1) < rowHigh)
+        {
+            int rowMid = (rowLow + rowHigh)/2;
+            if(matrix[rowMid][colMid] == target)
+                return true;
+            else if(matrix[rowMid][colMid] > target)
+                rowHigh = rowMid;
+            else
+                rowLow = rowMid;
+        }
+        
+        if(matrix[rowLow][colMid] == target || matrix[rowLow+1][colMid] == target)
+            return true;
+        
+        //first half of first row
+        else if(target < matrix[rowLow][colMid])
+        {
+            
+            return binarySearch(matrix, rowLow, 0, colMid-1, target);
+        }
+        
+        //second half of first row.
+        else if(target > matrix[rowLow][colMid] && target <= matrix[rowLow][column-1])
+        {
+            return binarySearch(matrix, rowLow, colMid+1, column-1, target);
+        }
+        
+        //first half of second row
+        else if(target < matrix[rowLow+1][colMid])
+        {
+            return binarySearch(matrix, rowLow+1, 0, colMid-1, target);
+        }
+        
+        //second half of second row
+        else if(target > matrix[rowLow+1][colMid] && target <= matrix[rowLow+1][column-1])
+        {
+            return binarySearch(matrix, rowLow+1, colMid+1, column-1, target);
+        }
+        else
+            return false;
+    }
+    
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        if(matrix.empty())
+            return false;
+        int row = matrix.size();
+        int column = matrix[0].size();
+        if(matrix[0].empty())
+            return false;
+        return matrixBinarySearch(matrix, row, column, target);
+    }
+};
