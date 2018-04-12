@@ -1,0 +1,105 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+public class Message
+{
+    int messageId;
+    string content;
+}
+
+class Post
+{
+    private:
+        list<queue<Message> > queueList;
+        list<mutex> mutexList;
+        
+        Post(int numQueues)
+        {
+            for(int i=0; i<numQueues; i++)
+            {
+                queueList.push_back(new queue<Message>);
+                mutexList.push_back(new mutex);
+            }
+        }
+        
+    public void postMessage(Message msg, int queueId)
+    {
+        queue<Message> postQueue = queueList[queueId];
+        mutexList[queueId].lock();
+        postQueue.push(msg);
+        mutexList[queueId].unlock();
+        /*synchonized(postQueue)
+        {
+            postQueue.push(msg);
+        }*/
+    }
+}
+
+————————————————————————————————
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+// for loadBalancer we will make a minheap with the queueId and size. So the queue with minimum elements will be on 
+//the top. Hence we will insert in the smallest queue and then increase the size of the queue and again push it to 
+//heap and heapify to always have the queue with min size on the top.
+
+// O(nlogn) and every push is logn
+
+
+
+#include <iostream>
+public class Message
+{
+    int messageId;
+    string content;
+}
+
+class Post
+{
+    private:
+        list<queue<Message> > queueList;
+        priority_queue<pair<int, int>, vector<pair<int, int>>, comparator> loadBalancer;
+        
+        
+        Post(int numQueues)
+        {
+            for(int i=0; i<numQueues; i++)
+            {
+                queueList.push_back(new queue<Message>);
+                pair<int, int> pq = make_pair(i, 0);
+                loadBalancer.push_back(pq);
+            }
+        }
+        
+        private bool comparator(const pait<int, int> a, const pair<int, int> b)
+        {
+            return a.second < b.second;
+        }
+        
+        public void postMessage(Message msg)
+        {
+            pair<int, int> pq = loadBalancer.top(); 
+            loadBalancer.pop();
+            int queueIndex = pq.first;
+            queueList[queueIndex].push_back(msg);
+            pq.second++;
+            loadBalancer.push_back(pq);
+            
+        }
+}
+
+
+
+
+
+

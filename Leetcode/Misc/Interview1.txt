@@ -1,0 +1,231 @@
+Q: 
+
+Original Matrix:
+
+7 4 1 9
+
+2 7 4 1
+
+8 2 7 4
+
+6 8 2 7
+
+
+
+Extended:
+
+7 4 1 9 3
+
+2 7 4 1 9
+
+8 2 7 4 1
+
+6 8 2 7 4
+
+5 6 8 2 7
+
+
+
+Q1: Write a function to determine if a given matrix (2d array) is special or not.
+
+
+
+bool isDiagSame( vector<vector<int>> matrix, int i, int j)
+
+{
+
+	int row = matrix.size();
+
+	int col = matrix[0].size();
+
+
+
+	int element = matrix[i][j];
+
+
+
+	int x=i;
+
+	int y=j;
+
+
+
+	while(x<row && y<col)
+
+	{
+
+		if(matrix[x][y] != element)
+
+		{
+
+			return false;
+
+		}
+
+		x++;
+
+		y++;
+
+	}
+
+	return true;
+
+}
+
+
+
+bool isMatrixSpecial(vector<vector<int>> matrix)
+
+{
+
+	if(matrix.empty())
+
+		return true;
+
+
+
+	int row = matrix.size();
+
+	int col = matrix[0].size();
+
+
+
+	if( col == 0)
+
+		return true;
+
+
+
+	// Go through first row 
+
+
+
+	for(int j = 0; j < col;j++)
+
+	{
+
+		bool isDiagSame = isDiagSame(matrix, 0, j);
+
+		if(!isDiagSame)
+
+			return false;
+
+	}
+
+
+
+	// Go through first column 
+
+
+
+	for(int i = 1; i < row;i++)
+
+	{
+
+		bool isDiagSame = isDiagSame(matrix, i, 0);
+
+		if(!isDiagSame)
+
+			return false;
+
+	}
+
+	return true;
+
+	
+
+}
+
+
+
+
+
+Q2: What if the matrix itself is too big to store into RAM, and you want to optimize the input but still do this check?
+
+
+
+
+
+
+
+bool isDiag(vector<int> prevRow, vector<int> currRow)
+
+{
+
+	if(prevRow.size() != currRow.size())
+
+	{
+
+		return false;
+
+	}
+
+
+
+	for(int i = 0; i < (prevRow.size() - 1); i++)
+
+	{
+
+		if(prevRow[i] != currRow[i+1])
+
+		{
+
+			return false;
+
+		}
+
+	}
+
+	return true;
+
+}
+
+
+
+bool isMatrixSpecial(vector<int>::it rowIterator)
+
+{
+
+	if(rowIterator.hasNext())
+
+	{
+
+		vector<int> firstRow = rowIterator.next();
+
+
+
+		return isMatrixSpecialRecur(rowIterator, firstRow);
+
+
+
+	}
+
+	return true;
+
+}
+
+
+
+bool isMatrixSpecialRecur(vector<int>::it rowIterator, vector<int> prevRow)
+
+{
+
+	if(rowIterator.hasNext())
+
+	{
+
+		vector<int> currRow = rowIterator.next();
+
+		bool isDiag = isDiag(prevRow, currRow);
+
+		if(!isDiag)
+
+			return false;
+
+		return isMatrixSpecialRecur(rowIterator, currRow);
+
+	}
+
+	return true;
+
+}

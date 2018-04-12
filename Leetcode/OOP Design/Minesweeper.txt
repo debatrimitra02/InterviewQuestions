@@ -1,0 +1,200 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include<algorithm>
+#include<climits>
+
+using namespace std;
+// The board has 3 states- "U" which is an unknown state i.e not revealed yet
+// "M" : marked state i.e you can mark a cell
+// and "X" -if the cell contains a bomb mark the cell as X
+
+
+class Board
+{
+    int row;
+    int column;
+    int numMines;
+    int numMarked;
+    int numUnknown;
+    //initializing dynamic array inside constructor. Using 2 stars because it is a 2D array
+    bool **mines;
+    char **board;
+    bool isGameOver;
+    
+    
+    Board(int row, int column, int numMines)
+    {
+        this->row = row;
+        this->column = column;
+        this->numMines = numMines;
+        //initializing dynamic array inside constructor. Using 2 stars because it is a 2D array
+        mines = new bool*[row];
+        board = new char*[row];
+        isGameOver = false;
+        
+        //Clear the board
+       for(int i=0; i<row; i++)
+       {
+           mines[i] = new bool[column];
+           board[i] = new char[column];
+           for(int j=0; j<column; j++)
+           {
+               mines[i][j] = false;
+               board[i][j] = (-1)+ '0';
+           }
+       }
+       
+       //now place the mines;
+       placeMines();
+    }
+    
+    void placeMines()
+    {
+        int count=0;
+        
+        while(count < numMines)
+        {
+            int cell = rand();
+            cell = (cell < 0 ? -cell : cell)%(row*column);
+            if(mines[row % cell][column/cell] == false)
+            {
+                mines[cell % column][cell/column] = true;
+                count++;
+            }
+        }
+    }
+
+
+ void reveal(int x, int y)
+    {
+                //if the cell is marked, unmark it and make it unknown and empty  and return
+            	if(board[x][y] == 'M')
+            	{
+                	numMarked--;
+                	numUnknown++;
+			board[x][y] = ‘E’;
+			return;
+
+            	}
+
+		if(mines[x][y] == true) 
+            	{
+                	isGameOver = true;
+                	board[x][y] = 'X';
+            	}
+                
+                if(board[x][y] == 'E')
+                {
+		     numUnknown—-;
+                    int numMines = closeMines(board, x, y); //find number of mines in the neighborhood
+                    if(numMines == 0)
+                    {
+                        board[x][y] = 'B'; //if no of mines in the neighborhood is 0 then mark the current cell as blank
+                    }
+                    else
+                    {
+                        board[x][y] = numMines + '0';
+                    }
+                        
+                }
+    }
+    
+    int closeMines(int x, int y)
+    {
+        for(int i= x-1; i<= x+1; i++)
+        {
+            for(int j = y-1; j<= y+1; j++)
+            {
+                if(i >=0 && i< row && j>=0 && j< col && mines[i][j])
+                    count++;
+            }
+        }
+        return count;
+    }
+    
+    void revealMore(int x, int y)
+    {
+        for(int i= x-1; i<= x+1; i++)
+        {
+            for(int j = y-1; j<= y+1; j++)
+            {
+                if(i >=0 && i< row && j>=0 && j< col)
+                {
+                    if(board[i][j] == 'E')
+                    {
+                        reveal(i, j);
+                        if(board[i][j] == 'B')
+                            revealMore(i, j);
+                    }
+                }
+                    
+            }
+        }
+    }
+    
+    
+    void updateBoard(vector<int>& click)
+  {
+      
+        int x= click[0];
+        int y = click[1];
+                
+        reveal(x, y);
+        if(board[x][y] == 'B') //if blank the recursively reveal others
+        {
+            revealMore(x, y);
+        }
+      
+    }
+
+   
+   /**
+166:    * 'Mark' the cell (x, y), probably to indicate that a player thinks there
+167:    * may be a mine there.  Up to numMines cells may be marked simultaneously.
+168:    * Returns true is the mark succeeded, false otherwise.
+169:    */
+    bool mark(int x, int y) 
+   {
+//(numMines - numMarked) > 0 coz you cannot mark more than the no of mines
+        if ((numMines - numMarked) > 0 && board[x][y] == ‘E’) 
+        {
+           board[x][y] = 'M';
+           numMarked++;
+	   numUnknown—-;
+           return true;
+        }
+     else 
+     {
+       return false;
+     }
+   }
+   
+   /**
+183:    * Unmark the previously marked cell at (x, y).  Returns true if the unmark
+184:    * succeeded (meaning that the cell was marked, false otherwise.
+185:    */
+    bool unmark(int x, int y) 
+   {
+     if (board[x][y] == 'M')
+     {
+           board[x][y] = ‘E’;
+           numMarked--;
+	    numUnknown++;
+           return true;
+     }
+     else
+     {
+         return false;
+     }
+   }
+   
+};
+
+

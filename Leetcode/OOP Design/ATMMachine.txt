@@ -1,0 +1,147 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+
+using namespace std;
+ /*
+1. deposit - max limit, max bills you can insert
+2. withdraw - max daily limit
+3. check balance
+4. check statement
+
+*/
+
+class ATMMachine
+{
+    string cardNum;
+    UserSession session;
+    void readCard()
+    {
+        string cardNum = scanCard();
+        if(cardNum == NULL)
+            throw new CardReadErrorException("Invalid Card");
+        
+        this.cardNum = cardNum;
+        showPinScreen();
+    }
+    //after you enter the pin the atm validates the card against that pin and the pin will be encrypted
+    void validateCard(string pin)
+    {
+        this.session = new UserSession(this.cardNum, pin);
+        showOptions();
+    }
+    
+    void deposit(float amount)
+    {
+        if(this.session == NULL)
+            throw new InvalidSessionException();
+            
+        int billCount = countBills();
+        if(billCount > MAX_BILL_COUNT)
+        {
+            throw new TooManyBillsException();
+        }
+        
+        float currentBalance = this.session.deposit(amount);
+        displayBalance(currentBalance);
+    }
+    
+    void withdraw(float amount)
+    {
+        if(this.session == NULL)
+            throw new InvalidSessionException();
+            
+        float currentBalance = this.session.withdraw(amount);
+        displayBalance(currentBalance);
+    }
+}
+
+class UserSession
+{
+    //when your card and pin are authenticated you get the authentication token
+    private string authToken;
+    private AuthServiceClient authClient;
+    
+    UserSession(string cardNum, string pin)
+    {
+        authToken = authClient.authenticate(cardNum, pin);
+        if(authToken == NULL)
+            throw new CardAuthenticationFailedException(" ");
+    }
+    
+    float deposit(float amount)
+    {
+        return this.authClient.deposit(authToken, amount);
+    }
+    
+    bool withdraw()
+    {
+        return this.authClient.withdraw(authToken, amount);
+    }
+    
+    
+}
+
+// This is the server implementation of AuthService. 
+// The client code will be generated based on the AuthService interface (AuthServiceClient)
+// and will have endpoint information for contacting the server
+class AuthServiceImpl implements AuthService
+{
+    float deposit(string authToken, float amount)
+    {
+        string accountId = validateToken(string authToken);
+        AccountSettings settings = getAccountSettings(accountId);
+        if(amount > settings.getMaxDepositAmount())
+        {
+            throw new DepositLimitExceededException("Max deposit amount is " + 
+                to_string(settings.getMaxDepositAmount()));
+        }
+        
+        //Will wait for lock if not available
+        try
+        {
+            lockBalance(accountId);
+            float balance = deposit(accountId, amount);
+        }
+        finally
+        {
+            unlockBalance(accountId);
+        }
+        return balance;
+    }
+    
+    float withdraw(string authToken, float amount)
+    {
+        string accountId = validateToken(string authToken);
+        AccountSettings settings = getAccountSettings(accountId);
+        if(amount > settings.getMaxWithdrawAmount())
+        {
+            throw new WithdrawLimitExceededException("Max Withdraw amount is " + 
+                to_string(settings.getMaxWithdrawAmount()));
+        }
+        
+        //Will wait for lock if not available
+        float balance = 0;
+        try{
+            lockBalance(accountId);
+            balance = getBalance(accountId);
+            if( (balance - amount) < settings.getMinBalance())
+            {
+                throw new InsufficientBalanceException();
+            }
+            withdraw(accountId, amount);
+            balance = balance - amount;
+        }
+        finally
+        {
+            unlockBalance(accountId);
+        }
+        return balance;
+    }
+}

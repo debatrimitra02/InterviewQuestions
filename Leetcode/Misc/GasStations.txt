@@ -1,0 +1,73 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+/*
+A bus has to travel from A to B and the distance is d miles. There are many gas stations between A and B. 
+The bus has initially g gallon of gas in tank. 1 gallon of gas travels 1 mile. 
+Gas stations have inforamtion of remaining distance from station to destination b and max gas that can be filled from the station. 
+Find the minimum number of stops for bus without running out of gas ever. 
+
+eg: gas = 10 , distance = 20 
+gasStation[] = {{16,3}, {10, 7}, {14, 11},{11, 5}, {7, 6}} 
+
+o/p = 1 
+If bus stops at the stop{14,11} that is 14 miles away from destination and fills 11 gallon then it can reach destination with 1 gallon spare. 
+It can also stop as {16,3} and {10,7} but its 2 stops and at destination it runs out of gas. 
+Similarly {11, 5}, {7, 6} has 2 stops but has 1 gallon spare at destination.
+*/
+
+
+
+#include <iostream>
+#include <vector>
+#include <climits>
+
+using namespace std;
+
+int getMinStops(int fuel, int distance, vector<pair<int,int>> gasStations, int startIndex)
+{
+    if (gasStations.empty())
+    {
+        return -1;
+    }
+    
+    if(fuel > distance)
+        return 0;
+        
+    if(fuel < (distance - gasStations[0].first))
+        return -1;
+    
+    int minStop=INT_MAX;
+    for(int i=startIndex; i<gasStations.size();i++)
+    {
+        int includeStop = 1 + getMinStops(
+            fuel - (distance - gasStations[i].first) + gasStations[i].second, 
+            gasStations[i].first, 
+            gasStations,
+            i+1);
+        
+        if(includeStop < minStop && includeStop >= 0)
+        {
+            minStop = includeStop;
+            cout<<minStop<<endl;
+        }
+    }
+    
+    return minStop;
+    
+}
+
+int main()
+{
+    vector<pair<int,int>> gasStations = 
+        {{16,3},{14,11},{11,5},{10,7},{7,6}};
+        
+    int min = getMinStops(15, 30, gasStations,0);
+
+    cout<<"Min Stop "<<min;
+    return 0;
+}

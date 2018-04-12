@@ -1,0 +1,103 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include<vector>
+
+
+
+using namespace std;
+
+class TreeNode
+{
+    public:
+        vector<TreeNode*> children;
+        int val;
+};
+
+
+bool findPath(TreeNode* firstNode, int next, vector<int>& res)
+{
+    if(firstNode == NULL)
+        return false;
+    res.push_back(firstNode->val);
+    if(firstNode-> val == next)
+        return true;
+    else
+    {
+        for(int i=0;i<firstNode->children.size();i++)
+        {
+            bool childFound = findPath(firstNode->children[i], next, res);
+            if(childFound)
+            {
+                return true;
+            }
+            else
+            {
+                res.pop_back();
+            }
+        }
+    }
+    return false;
+}
+
+int LCA(TreeNode* root, int a, int b)
+{
+    if(a==b)
+        return a;
+    vector<int> res1;
+    vector<int> res2;
+ 
+//find the path from root to that node.           
+    findPath(root, a, res1);
+    findPath(root, b, res2);
+    
+    cout<<res1.size()<<" "<<res2.size()<<endl;;
+    
+    int result = -1;
+    if(res1.empty() || res2.empty())
+    {
+        return result;
+    }
+  
+//now traverse through the path vectors and note the point till where the path is same and after which the path diverges. That point is the LCA  
+    for(int i=0; i< res1.size() && i<res2.size(); i++)
+    {
+        cout<<res1[i]<<","<<res2[i]<<endl;
+        if(res1[i] != res2[i])
+        {
+            result = res1[i-1];
+            break;
+        }
+    }
+    
+    return result;
+}
+
+TreeNode* newNode(int key)
+{
+    TreeNode *temp = new TreeNode;
+    temp->val = key;
+    return temp;
+}
+
+int main()
+{
+    TreeNode * root = newNode(3);
+    root->children.push_back(newNode(5));
+    root->children.push_back(newNode(1));
+    root->children.push_back(newNode(6));
+    root->children[0]->children.push_back(newNode(2));
+    root->children[2]->children.push_back(newNode(0));
+    
+    
+    int res = LCA(root, 2, 0);
+    
+    cout<<res;
+    return 0;
+}

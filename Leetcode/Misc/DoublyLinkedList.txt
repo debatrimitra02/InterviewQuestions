@@ -1,0 +1,19 @@
+void splice(node** head, node* keyNode)
+            {
+                if(keyNode->next != NULL)
+                {
+                    keyNode->next->prev = keyNode->prev;
+                }
+                if(keyNode->prev != NULL)
+                {
+                    keyNode->prev->next = keyNode->next;
+                }
+                //make the next pointer of keyNode point to head
+                keyNode->next = *head;
+                //break the link
+                keyNode->prev = NULL;
+                *head->prev = keyNode;
+                //fix head
+                *head = keyNode;
+                
+            }

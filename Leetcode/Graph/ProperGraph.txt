@@ -1,0 +1,38 @@
+class GraphNode
+{
+    int val;
+    list<GraphNode*> neighbors;
+}
+class Graph
+{
+    void addEdge(GraphNode* a, GraphNode* b)
+    {
+        a.neighbors.push_back(b);
+        b.neighbors.push_back(a);
+    }
+    
+    void BFS(GraphNode* src)
+    {
+        set<GraphNode*> visited;
+        std::queue<GraphNode*> toVisit;
+        visited.insert(src);
+        toVisit.push_back(src);
+        list<GraphNode*>:: iterator it;
+        while(! toVisit.empty())
+        {
+            GraphNode* current = toVisit.front();
+            cout<<current.val;
+            toVisit.pop();
+            for(it = current.neighbors.begin(); it!= current.neighbors.end(); it++)
+            {
+                if(visited.find(*it) == visited.end())
+                {
+                    visited.insert(*it);
+                    toVisit.push_back(*it);
+                    
+                }
+            }
+        }
+        
+    }
+}

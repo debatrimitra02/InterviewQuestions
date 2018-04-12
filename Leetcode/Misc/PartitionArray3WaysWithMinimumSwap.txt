@@ -1,0 +1,137 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+// input array, not sorted
+// 3 way partition of the array
+// Given pivot value
+// sec1: < pivot
+// sec2: == pivot
+// sec3: > pivot
+
+
+#include<vector>
+#include<iostream>
+
+using namespace std;
+
+void swap(vector<int>& nums, int i, int j)
+{
+  int temp = nums[i];
+  nums[i] = nums[j];
+  nums[j] = temp;
+}
+  
+int findLowIndex(vector<int>& nums, int pivot, int& lowIndex, int lowCount)
+{
+  while(lowIndex < lowCount)
+  {
+    if(nums[lowIndex] == pivot)
+    {
+      return lowIndex;
+    }
+    lowIndex++;
+    
+  }
+  return -1;
+}
+
+int findHighIndex(vector<int>& nums, int pivot, int& highIndex)
+{
+  while(highIndex < nums.size())
+  {
+    if(nums[highIndex] == pivot)
+    {
+      return highIndex;
+    }
+    highIndex++;
+    
+  }
+  
+  return -1;
+}
+ 
+void partitionArray(vector<int>& nums, int pivot)
+{
+  int lowCount=0;
+  int midCount=0;
+  int highCount=0;
+  
+  for(int i=0;i<nums.size();i++)
+  {
+    if(nums[i]<pivot)
+    {
+      lowCount++;
+    }
+    else if (nums[i] == pivot)
+    {
+      midCount++;
+    }
+    else
+    {
+      highCount++;
+    }
+  }
+  
+  int lowIndex=0;
+  int midIndex = lowCount ;
+  int highIndex = lowCount + midCount;
+  
+  while(midIndex < (lowCount + midCount))
+  {
+    int index = -1;
+    if(nums[midIndex] < pivot)
+    {
+      index = findLowIndex(nums, pivot, lowIndex, lowCount);
+      if(index < 0)
+      {
+        index = findHighIndex(nums, pivot, highIndex);
+      }
+    }else if(nums[midIndex] > pivot)
+    {
+      index = findHighIndex(nums, pivot, highIndex);
+      if(index < 0)
+      {
+        index = findLowIndex(nums, pivot, lowIndex, lowCount);
+      }
+    }
+    
+    if(index >=0)
+    {
+      swap(nums, midIndex, index);
+    }
+    midIndex++;
+  }
+  //mid is done
+  
+  lowIndex=0;
+  midIndex = lowCount ;
+  highIndex = lowCount + midCount;
+  while(lowIndex< midIndex && highIndex< nums.size())
+  {
+    while(nums[lowIndex] < pivot && lowIndex< midIndex)
+      lowIndex++;
+    while(nums[highIndex] > pivot && highIndex< nums.size())
+      highIndex++;
+    
+    swap(nums, lowIndex, highIndex);
+    lowIndex++;
+    highIndex++;
+    
+  }
+  
+}
+
+int main()
+{
+  vector<int> nums = {2, 3, 6, 8, 3, 4, 7, 4, 5, 1,4,10,4};
+  partitionArray(nums, 4);
+  for(int i=0; i<nums.size(); i++)
+  {
+    cout<<nums[i]<<",";
+  }
+}

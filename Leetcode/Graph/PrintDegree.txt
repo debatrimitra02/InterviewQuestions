@@ -1,0 +1,51 @@
+#include <iostream>
+class GraphNode
+{
+    int val;
+    list<GraphNode*> neighbors;
+}
+class GraphNodeWithDegree
+{
+    GraphNode* node;
+    int degree;
+}
+class Graph
+{
+    void addEdge(GraphNode* a, GraphNode* b)
+    {
+        a.neighbors.push_back(b);
+        b.neighbors.push_back(a);
+    }
+    
+    void BFS(GraphNode* src)
+    {
+        set<GraphNode*> visited;
+        std::queue<GraphNodeWithDegree*> toVisit;
+        visited.insert(src);
+        GraphNodeWithDegree* node = new GraphNodeWithDegree();
+        node.node = src;
+        node.degree=0;
+        toVisit.push_back(node);
+        list<GraphNode*>:: iterator it;
+        while(! toVisit.empty())
+        {
+            GraphNode* current = toVisit.front().node;
+            int degree = toVisit.front().degree;
+            cout<<current.val;
+            toVisit.pop();
+            for(it = current.neighbors.begin(); it!= current.neighbors.end(); it++)
+            {
+                if(visited.find(*it) == visited.end())
+                {
+                    GraphNodeWithDegree* temp = new GraphNodeWithDegree();
+                    temp.node = *it;
+                    temp.degree=degree+1;
+                    visited.insert(*it);
+                    toVisit.push_back(temp);
+                    
+                }
+            }
+        }
+        
+    }
+}

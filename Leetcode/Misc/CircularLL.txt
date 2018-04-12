@@ -1,0 +1,112 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+
+using namespace std;
+
+bool isCircular(ListNode* head)
+{
+    if(head== NULL)
+        return false;
+    
+    ListNode* curr = head->next;
+    while(curr!= NULL && curr!= head)
+        curr = curr->next;
+    
+    return curr==head;
+}
+
+void circularSortedInsertion(ListNode** head, ListNode* newNode)
+{
+    ListNode* current = head;
+    
+    //Case1. If it is the only node to be inserted into the CLL
+    
+    if(current == NULL)
+    {
+        newNode->next = newNode;
+        *head = newNode;
+    }
+    
+    //Case2. If the new node is to be inserted before the head of the CLL
+    else if(current->val > newNode->val)
+    {
+        while(current->next!= NULL && current->next!= *head)
+            current = current->next;
+        
+        current->next = newNode;
+        newNode->next = *head;
+        *head = newNode;
+    }
+    
+    //Case3: to be inserted somewhere in the CLL
+    else
+    {
+        while(current->next != *head && current->next->val < newNode->val)
+            current = current->next;
+            
+        newNode->next = current->next;
+        current->next = newNode;
+    }
+}
+
+void deleteNode(ListNode* head, int key)
+{
+    if(head == NULL)
+        return;
+    
+    //only node in CLL    
+    if(head->next == head && head->val == key)
+    {
+        free(head);
+        return;
+    }
+    ListNode* curr = head;
+    ListNode* prev;
+    
+    while(curr->val!= key && curr->next!= head)
+    {
+        prev = curr;
+        curr = curr->next;
+    }
+    if(curr->next == head)
+    {
+        cout<<"Not Found";
+    }
+    //node to be deleted is the firstNode
+    if(curr == head)
+    {
+        prev = head;
+        while(prev->next != head)
+            prev = prev->next;
+            
+        head = curr->next;
+        prev->next = curr;
+        free(curr);
+    }
+    
+    // check if node is last node
+    else if (curr -> next == head)
+    {
+        prev->next = head;
+        free(curr);
+    }
+    else
+    {
+        prev->next = curr->next;
+        free(curr);
+    }
+}
+
+int main()
+{
+    cout<<"Hello World";
+
+    return 0;
+}

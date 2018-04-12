@@ -1,0 +1,46 @@
+Lock mutex
+The calling thread locks the mutex, blocking if necessary:
+
+If the mutex isn't currently locked by any thread, the calling thread locks it (from this point, and until its member unlock is called, the thread owns the mutex).
+If the mutex is currently locked by another thread, execution of the calling thread is blocked until unlocked by the other thread (other non-locked threads continue their execution).
+If the mutex is currently locked by the same thread calling this function, it produces a deadlock (with undefined behavior). See recursive_mutex for a mutex type that allows multiple locks from the same thread.
+
+All lock and unlock operations on the mutex follow a single total order, with all visible effects synchronized between the lock operations and previous unlock operations on the same object.
+
+
+std::mutex mtx;           // mutex for critical section
+
+void print_thread_id (int id) {
+  // critical section (exclusive access to std::cout signaled by locking mtx):
+  mtx.lock();
+  std::cout << "thread #" << id << '\n';
+  mtx.unlock();
+}
+
+Lock multiple mutexes
+Locks all the objects passed as arguments, blocking the calling thread if necessary.
+
+The function locks the objects using an unspecified sequence of calls to their members lock, try_lock and unlock that ensures that all arguments are locked on return (without producing any deadlocks).
+
+
+#include <iostream>       // std::cout
+#include <thread>         // std::thread
+#include <mutex>          // std::mutex, std::lock
+
+std::mutex foo,bar;
+
+void task_a () {
+  // foo.lock(); bar.lock(); // replaced by:
+  std::lock (foo,bar);
+  std::cout << "task a\n";
+  foo.unlock();
+  bar.unlock();
+}
+
+void task_b () {
+  // bar.lock(); foo.lock(); // replaced by:
+  std::lock (bar,foo);
+  std::cout << "task b\n";
+  bar.unlock();
+  foo.unlock();
+}

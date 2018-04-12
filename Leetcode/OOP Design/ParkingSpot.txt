@@ -1,0 +1,156 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+
+using namespace std;
+
+public enum VehicleSize {MotorCycle, Compact, Large};
+public enum VehiclePermit {None, Handicapped};
+
+class ParkingLot
+{
+    int levels;
+    //so when you park a vehicle you move the spot from available to used map; key is the levelNum here
+    map<int, set<ParkingSpot>> levelAvailableParkingSpots;
+    map<int, set<ParkingSpot>> levelUsedParkingSpots;
+    
+    //it can be any available spot or an available spot in any level
+    public ParkingSpot findAvailableSpot(Vehicle vehicle)
+    {
+       VehicleSize size = vehicle.getSize();  
+       for(auto availableSpot : levelAvailableParkingSpots)
+       {
+           set<ParkingSpot> spots = availableSpot->second;
+           if(spots.size() > 0 )
+           {
+               for(auto it = spots.begin(); it!= spots.end(); it++)
+               {
+                   if(*it.canFitInSpot(vehicle))
+                       return *it;
+               }
+           }
+       }
+       throw new NoParkingSpotFoundException();
+    }
+    
+    public bool parkVehicle(Vehicle vehicle)
+    {
+        ParkingSpot spotAvailable  = findAvailableSpot(vehicle);
+        levelAvailableParkingSpots[spotAvailable.getLevelNumber].erase(spotAvailable);
+        levelUsedParkingSpots[spotAvailable.getLevelNumber].insert(spotAvailable);
+        spotAvailable.parkVehicle(vehicle);
+        return true;
+    }
+    
+    public bool unparkVehicle(Vehicle vehicle, ParkingSpot spot)
+    {
+        //just do the opposite of parkVehicle 
+    }
+}
+
+abstract class Vehicle
+{
+    list<ParkingSpot> spotsTaken;
+    string licensePlate;
+    VehicleSize size;
+    //you can add permit to the enum class for other permits say government
+    VehiclePermit permit;
+    
+    public VehicleSize getSize()
+    {
+        return size;
+    }
+    
+    public VehiclePermit getPermit()
+    {
+        return permit;
+    }
+    
+    bool canFitInSpot(ParkingSpot spot)
+    {
+        
+    }
+    
+}
+
+public class Bus extends Vehicle{
+    
+    public Bus()
+    {
+        size = VehicleSize.Large;
+    }
+}
+
+public class ParkingSpot
+{
+    int spotNumber;
+    int rowNumber;
+    VehicleSize spotSize;
+    int levelNum;
+    
+    //checks if the spot is Avaible or not;
+    bool isAvailable;
+    
+    public int  getLevelNumber()
+    {
+        
+    }
+    
+    public bool isAvailable()
+    {
+        return isAvailable;
+    }
+    
+    public bool canFitInSpot(Vehicle vehicle)
+    {
+        VehicleSize size = vehicle.getSize();
+        return isAvailable && size == spotSize;
+    }
+    
+    //automated parking space where a machine parks the vehicle. Do hardware magic.
+    public bool parkVehicle(Vehicle vehicle)
+    {
+        
+    }
+    
+    public bool unparkVehicle(Vehicle vehicle)
+    {
+        
+    }
+}
+
+class ParkingTicket
+{
+    int ticketId;
+    Vehicle vehicle;
+    DateTimeOffset parkingStartTime;
+    
+}
+class ParkingRate
+{
+    float getParkingFee(TimeSpan totalTime)
+    {
+        
+    }
+}
+
+class PaymentProcessor
+{
+    ParkingRate getParkingRate(VehiclePermit permit)
+    {
+        
+    }
+    float getBill(ParkingTicket ticket)
+    {
+        // (3/25/2008 6:00:00 PM -07:00) - (3/25/2008 6:00:00 PM -05:00): 0 days, 2:00
+        TimeSpan totalTime = DateTimeOffset.Now - ticket.parkingStartTime;
+        ParkingRate rate = getParkingRate(ticket.vehicle.getPermit());
+        return rate.getParkingFee(totalTime);
+    }
+}

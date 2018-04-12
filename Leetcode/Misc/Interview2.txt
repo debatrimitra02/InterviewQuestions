@@ -1,0 +1,110 @@
+one = "   the"
+  two = "the"
+  
+  #define primeNumber 101
+  // What are some things that can go wrong here?
+  boolean isMatch(String one, String two) {
+      if(one == null && two == null)
+      {
+          return true;
+      }
+      
+      if(one == null || two == null)
+      {
+          return false;
+      }
+      
+      one = one.trim();
+      two = two.trim();
+      
+      if(one.length() != two.length())
+      {
+          return false;
+      }
+    for(int i = 0; i < one.length(); i++) {
+      char c1 = one.charAt(i);
+      char c2 = two.charAt(i);
+      if (c1 != c2) return false;
+    }
+    return true;
+  }
+
+  // What should be returned here?
+  // FileNotFound
+  // Valid File Path Format
+  // AccesssDenied
+  // 
+  target = "apple"
+  string = "xappl"
+  string = "applx"
+  vector<int> fileStringSearch(String target, String filePath) {
+  
+      vector<int> indexes;
+      
+      string::iterator fileStream = file.stream(filePath);
+      
+      int patternLength = target.length();
+      
+      vector<char> V(patternLength);
+      
+      int i=0;
+      
+      int patternHash = calculateHash(target);
+      int textHash = 0;
+      int maxMatchCount = 0;
+      
+      while(fileStream.hasNext())
+      {
+          while(i < patternLength && fileStream.hasNext())
+          {
+              V.push_back(fileStream.next();
+              i++;
+          }
+          
+          string text = getString(V);
+          
+          textHash = textHash == 0? calculateHash(text) : textHash;
+          
+          if( patternHash == textHash && isMatch(text, pattern))
+              indexes.push_back(i - patternLength);
+          else
+          {
+              int matchCount = findMaxMatch(text, pattern);
+              
+          }
+            
+          char oldChar = V[0];
+          V.pop_front();
+          
+          if(fileStream.hasNext())
+          {
+              V.push_back(fileStream.next());
+              char newChar = V.back();
+              // Rolling hash
+              textHash = reCalculateHash(testHash, oldChar, newChar, patternLength)
+              
+          }
+          i++; 
+      } 
+          
+      return indexes;
+
+  }
+  
+  long calculateHash(string str)
+  {
+      long hash = 0;
+      for(int i=0; i<str.length();i++)
+      {
+          hash = hash + pow(primeNumber, i)* str[i];
+       }
+      return hash;
+  }
+  
+  long reCalculateHash(long oldHash, char oldChar, char newChar, int patternLength )
+  {
+      long newHash = oldHash - oldChar;
+      newHash = newHash/primeNumber;
+      newHash = newHash + pow(primeNumber, patternlength -1)*newChar;
+      return newHash;
+  }

@@ -1,0 +1,131 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+/*
+Determine whether you could take a k-cost trip(as in you won't spend more than $1000 to travel from WA to Miami)
+from a given starting location to a given destination, 
+using only a given set of boarding passes. Now consider travelling from source to 
+destination will have a fare attached. So you will have to find minimum fare path 
+and if the cost exceeds k return false 
+
+*/
+
+
+public class BoardingPass
+{
+    string sourceCode;
+    string destCode;
+    int fare;
+}
+
+public class GraphNode
+{
+    string code;
+    //each graphnode contains its neighbors and the distance to its neighbors
+    vector<pair<GraphNode, int>> neighbors;
+}
+
+public class Graph
+{
+    map<string, GraphNode> airports;
+    
+    void add(BoardingPass ticket)
+    {
+        GraphNode source;
+        auto it = airports.find(ticket.sourceCode);
+        if(it == airports.end())
+        {
+            source = new GraphNode(ticket.sourceCode);
+            airports[ticket.sourceCode] = source;
+        }else{
+            source = it->second;
+        }
+        
+        GraphNode dest;
+        auto it1 = airports.find(ticket.destCode);
+        if(it1 == airports.end())
+        {
+            dest = new GraphNode(ticket.destCode);
+            airports[ticket.destCode] = dest;
+        }else
+        {
+            dest = it->second;
+        }
+       
+        source.neighbors.push_back(make_pair(dest, ticket.fare));
+        
+    }
+}
+
+public class ShortestPath
+{
+    Graph graph;
+    public ShortestPath(vector<BoardingPass> tickets)
+    {
+        graph = new Graph();
+        
+        for(int i=0; i<tickets.size();i++)
+        {
+            graph.add(tickets[i]);
+        }
+    }
+    
+    bool kHop(int maxFare, string source, string destination)
+    {
+        // we are storing a pair of GraphNode and fare in the minHeap+ map (custom implementation)
+        BinaryMinHeap<pair<GraphNode, int> minHeap = new BinaryMinHeap();
+        for(auto i = graph.airports.begin(); i != graph.airports.end(); i++)
+        {
+            minHeap.push_back(make_pair(i->second, INT_MAX));
+        }
+        auto it = graph.airports.find(source);
+        
+        if(it == graph.airports.end())
+        {
+            return false;
+        }
+        
+        //set distance of source vertex to 0
+        minHeap.decrease(it->second, 0);
+        
+        while(!minHeap.empty())
+        {
+            pair<GraphNode, int> node = minHeap.top();
+            minHeap.pop();
+            GraphNode minNode = node.first;
+            int startCost = node.second;
+            
+            //if the minimum cost exceeds the maxFare then return false
+            if(startCost > maxFare)
+            {
+                return false;
+            }
+            
+            // return true if you have reached the destination and the fare is below maxFare
+            if(minNode.code == destination)
+            {
+                return true;
+            }
+            
+            //update fare of all the neighbors in the next level
+            vector<pair<GraphNode, int>> neigh = minNode.neighbors;
+            for(int i = 0; i<neigh.size(); i++)
+            {
+                int cost = startCost + neigh[i].second;
+                if( cost < minHeap.getWeight(neigh[i]).first)
+                {
+                    minHeap.decrease(neigh[i].first, cost);
+                }
+            }
+        }
+        return false;
+    }
+}
+
+
+
+

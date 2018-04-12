@@ -1,0 +1,39 @@
+/*
+Given an ArrayList of Nodes, with each Node having an ID and a parent ID, determine whether the List is given in preorder.
+*/
+
+struct node{
+
+ int value;
+ struct node* parent;
+};
+
+bool isPreOrder(vector<struct node*> nodeList)
+{
+
+    if(nodeList.empty())
+        return true;
+        
+     set<struct node*> S;
+     
+     if(nodeList[0].parent != NULL)
+     {
+         return false;
+     }
+     
+     S.insert(nodeList[0]);
+     
+     for(int i=1; i< nodeList.size(); i++)
+     { 
+             auto it = S.find(nodeList[i].parent);
+             if(it == S.end()) // not found
+             {
+                 return false;
+             }
+         
+         
+         S.insert(nodeList[i]);
+     }
+     
+     return true;
+}

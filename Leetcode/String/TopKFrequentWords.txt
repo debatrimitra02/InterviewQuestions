@@ -1,0 +1,108 @@
+class Solution {
+public:
+  struct comparison 
+{
+    public:  
+        bool operator() (const pair<string,int>& lhs, const pair<string,int>& rhs) const {
+            if(lhs.second==rhs.second)
+            {
+                string str1 = lhs.first;
+                string str2 = rhs.first;
+                int i=0;
+                int j=0;
+                while(i< str1.length() && j< str2.length())
+                {
+                    if((str1[i] - 'a') != (str2[j] - 'a'))
+                        return ((str1[i] - 'a') < (str2[j] - 'a'));
+                    else
+                    {
+                        i++;
+                        j++;
+                    }
+                }
+                if(i == str1.length())
+                    return true;
+                else
+                    return false;
+            }
+            return (lhs.second>rhs.second);
+        }
+  };
+    
+    vector<string> topKFrequent(vector<string>& words, int k) {
+        vector<string> result;
+        if(words.empty())
+            return result;
+        
+        unordered_map<string, int> freqCounter;
+        
+        for(int i=0; i<words.size(); i++)
+        {
+            freqCounter[words[i]]++;
+        }
+        
+        priority_queue<pair<string, int>, vector<pair<string, int>>, comparison> pq; //min heap
+        for(unordered_map<string, int>:: iterator it = freqCounter.begin(); it!= freqCounter.end(); it++)
+        {
+            if (pq.size() < k) {
+                pq.push(*it); 
+            }
+            else if (pq.top().second < it->second) 
+            {
+                pq.pop();
+                pq.push(*it);
+            }
+            
+            else if(pq.top().second == it->second)
+            {
+                string str1 = pq.top().first;
+                string str2 = it->first;
+                int i=0;
+                int j=0;
+                while(i< str1.length() && j< str2.length())
+                {
+                    //the word at the top of the heap is of a lower alphabetic order so do nothing
+                    if((str1[i] - 'a') < (str2[j] - 'a'))
+                    {
+                        break;
+                    }
+                    //if the word at the top of the queue is of higher alphabetic order then the new one should be pushed into                          the heap
+                    else if((str1[i] - 'a') > (str2[j] - 'a'))
+                    {
+                        pq.pop();
+                        pq.push(*it);
+                        break;
+                    }
+                    
+                    //otherwise we continue the comparison.
+                    else
+                    {
+                        i++;
+                        j++;
+                    }
+                }
+                
+                // this means that str1.length() > str2.length() hence str1 is of a higher alphabetic order
+                if(j == str2.length())
+                {
+                    pq.pop();
+                    pq.push(*it);
+                }
+                
+            }
+        }
+        
+        // we need the stack because top of the heap will have the element with min freq as it is a minheap but we need the                 result in descending order
+        stack<string> S;
+        for (int i=0; i<k; ++i) {
+            S.push(pq.top().first);
+            pq.pop();
+        }
+        while(!S.empty())
+        {
+            result.push_back(S.top());
+            S.pop();
+        }
+        return result;
+    }
+};

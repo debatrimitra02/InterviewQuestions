@@ -1,0 +1,215 @@
+#include <iostream>
+using namespace std;
+
+/*
+Suppose we have a matrix representing a map consisting of 'X', 'O'
+
+
+
+O O O O
+X X X X
+O O O O 
+
+
+
+We'll be given two points, s and t in the matrix. Does there exist a path from s to t. 
+
+
+s O O t
+X X X X
+O O O O 
+
+true
+
+s O O O
+X X X X
+O O O t 
+
+false
+
+
+0 0 0 0 
+0 X 0 X
+X X 0 0
+0 0 0 0
+
+s 0 0 0 
+0 X 0 X
+X X t 0
+0 0 0 0
+
+1 1 1 1
+1 0 1 0
+0 0 1 0
+0 0 0 0
+*/
+
+
+
+class Point
+{
+  int x;
+  int y;
+};
+
+bool isSafe(vector<vector<char>> matrix, int x, int y, vector<vector<int>>& sol)
+{
+  int row = matrix.size();
+  int col = matrix[0].size();
+  
+  return x >=0 && x < row && y>=0 && y<col && matrix[x][y] != 'X' && sol[x][y] == 0;
+}
+
+bool isPathFoundUtil(vector<vector<char>> matrix, Point start, Point end, vector<vector<int>>& sol)
+{
+  if(start.x == end.x && start.y == end.y)
+    return true;
+  
+  sol[start.x][start.y] = 1;
+  
+  if(isSafe(matrix, start.x -1, start.y, sol))
+  {
+     bool pathFound = isPathFoundUtil(matrix, new Point(start.x-1, y), end, sol);
+     if(pathFound)
+         return true;
+  }
+  
+  if(isSafe(matrix, start.x +1, start.y, sol))
+  {
+     bool pathFound = isPathFoundUtil(matrix, new Point(start.x+1, y), end, sol);
+     if(pathFound)
+         return true;
+  }
+  
+  if(isSafe(matrix, start.x, start.y-1, sol))
+  {
+     bool pathFound = isPathFoundUtil(matrix, new Point(start.x, y-1), end, sol);
+     if(pathFound)
+         return true;
+  }
+  
+  if(isSafe(matrix, start.x, start.y+1, sol))
+  {
+     bool pathFound = isPathFoundUtil(matrix, new Point(start.x, y+1), end, sol);
+     if(pathFound)
+         return true;
+  }
+  return false;
+}
+
+bool isPathFound(vector<vector<char>> matrix, Point start, Point end)
+{
+  if(matrix.empty())
+    return false;
+  
+  int row = matrix.size();
+  int col = matrix[0].size();
+  
+  if(start.x < 0 || start.x >= row || end.x < 0 || end.x >= row)
+    return false;
+  
+  if(start.y < 0 || start.y >= col || end.y < 0 || end.y >= col)
+    return false;
+  
+  vector<vector<int>> sol(row, vector<int>(col, 0));
+  
+  return isPathFoundUtil(matrix, start, end, sol);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+Suppose we are dealing with binary tree. We say that a tree is single valued if every
+node has same value
+
+Eg. 
+
+  1
+1   1
+
+3
+
+
+     1
+  
+ 2       3
+  
+2 2  4 .   5
+
+5
+
+
+Count the number of subtrees which are singly valued? 
+
+*/
+
+class TreeNode
+{
+  int val;
+  TreeNode* left;
+  TreeNode* right;
+};
+
+/*
+
+  1
+    1
+*/
+
+bool countSingleValuedSubTrees(TreeNode* root, int &count)
+{
+  if(root == NULL)
+    return true;
+  
+  bool left = countSingleValuedSubTrees(root->left, count);
+  bool right = countSingleValuedSubTrees(root->right, count);
+  
+  if( !left || !right)
+    return false;
+  
+  if( root->left && root->val != root->left->val)
+    return false;
+  
+  if( root->right && root->val != root->right->val)
+    return false;
+  
+  count++;
+  return true;
+}
+
+int countSingleValued(TreeNode* root)
+{
+  int count = 0;
+  
+  countSingleValuedSubTrees(root, count);
+  return count;
+}
+
+
+// To execute C++, please define "int main()"
+int main() {
+  auto words = { "Hello, ", "World!", "\n" };
+  for (const string& word : words) {
+    cout << word;
+  }
+  return 0;
+}

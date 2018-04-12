@@ -1,0 +1,67 @@
+/*Given two list of unsorted intervals V1 and V2 write 2 functions 'OR ' and 'And' to return a new list 
+
+OR Function (union of list ): Input V1 = (2,4) (6,8) (1,3) V2 = (7,9) (2,5) 
+output = (1,5) (6,9) 
+
+And function : This will be intersection function and will return intersection of the lists
+
+std::vector<std::pair<int, int>> OrFunction(const std::vector<std::pair<int, int>>& v1,*/
+                                                                    const std::vector<std::pair<int, int>>& v2)
+{
+    std::vector<std::pair<int, int>> result;
+    std::map<int, int> data;
+
+    for (const auto& p : v1)   1-1,  2-2, 3- -1, 4- -1, 5- -1, 6-1,7- 1, 8- -1, 9- -1
+    {
+        data[p.first]++;
+        data[p.second]--;
+    }
+    for (const auto& p : v2)
+    {
+        data[p.first]++;
+        data[p.second]--;
+    }
+    int i = 0;
+    int count = 0;
+    for (const auto& p : data)
+    {
+        if (count == 0) i = p.first;
+        count += p.second;
+        if (count == 0) result.push_back(std::make_pair(i, p.first));
+    }
+
+    return result;
+}
+std::vector<std::pair<int, int>> AndFunction(const std::vector<std::pair<int, int>>& v1,
+                                                                      const std::vector<std::pair<int, int>>& v2)
+{
+    std::vector<std::pair<int, int>> result;
+    std::map<int, int> data;
+
+    for (const auto& p : v1)
+    {
+        data[p.first]++;
+        data[p.second]--;
+    }
+    for (const auto& p : v2)
+    {
+        data[p.first]++;
+        data[p.second]--;
+    }
+    int i = 0;
+    int count = 0;
+    for (const auto& p : data)
+    {
+	 if (p.second > 0 && count>0) i = p.first;
+        
+	 count += p.second;
+        
+        if (p.second < 0 && i != 0)
+        {
+            result.push_back(std::make_pair(i, p.first));
+            i = 0;
+        }
+    }
+
+    return result;
+}

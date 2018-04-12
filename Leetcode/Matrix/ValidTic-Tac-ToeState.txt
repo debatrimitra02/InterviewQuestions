@@ -1,0 +1,106 @@
+/*
+Basically, to find the validity of an input grid, we can think of the conditions when an input grid is invalid. Let no. of “X”s be countX and no. of “O”s be countO. Since we know that the game starts with X, a given grid of Tic-Tac-Toe game would be definitely invalid if following two conditions meet
+a) countX != countO AND
+b) countX != countO + 1
+
+Since “X” is always the first move, second condition is also required.
+
+Now does it mean that all the remaining board positions are valid one? The answer is NO. Think of the cases when input grid is such that both X and O are making straight lines. This is also not valid position because the game ends when one player wins. So we need to check the following condition as well
+c) If input grid shows that both the players are in winning situation, it’s an invalid position.
+d) If input grid shows that the player with O has put a straight-line (i.e. is in win condition) and countX != countO, it’s an invalid position. The reason is that O plays his move only after X plays his move. Since X has started the game, O would win when both X and O has played equal no. of moves.
+e) If input grid shows that X is in winning condition than xCount must be one greater that oCount.
+*/
+
+
+class Solution {
+public:
+    bool isWinner(vector<string>& board, char c)
+    {
+        int row = board.size();
+        int col = board[0].size();
+        //check all rows
+        for(int i=0; i<row; i++)
+        {
+            bool flag = true;
+            for(int j=0; j<col; j++)
+            {
+                flag = flag & (board[i][j] == c);
+            }
+            if(flag)
+                return true;
+        }
+        //check all cols
+        for(int j=0; j<col; j++)
+        {
+            bool flag = true;
+            for(int i=0; i<row; i++)
+            {
+                flag = flag & (board[i][j] == c);
+            }
+            if(flag)
+                return true;
+        }
+        
+        //check right diagonal
+        bool flag = true;
+        for(int i=0, j=0; i<row && j<col; i++, j++)
+        {
+            flag = flag & (board[i][j] == c);
+            
+        }
+        if(flag)
+            return true;
+        
+        //check other diagonal
+        //reset flag to true again
+        flag = true;
+        for(int i=0, j=col-1; i<row && j>=0; i++, j--)
+        {
+            flag = flag & (board[i][j] == c);
+            
+        }
+        if(flag)
+            return true;
+        
+        return false;
+    }
+    
+    bool validTicTacToe(vector<string>& board) 
+    {
+        int countX=0;
+        int countO =0;
+        for(int i=0; i<board.size(); i++)
+        {
+            for(int j=0; j<board[0].size(); j++)
+            {
+                if(board[i][j] == 'X')
+                    countX++;
+                else if(board[i][j] == 'O')
+                    countO++;
+            }
+        }
+        
+        //The board is only valid if countX == countO or countX = countO+1 as X plays first
+        if(countX == countO || countX ==  countO+1)
+        {
+            //check if O is the winner
+           if(isWinner(board, 'O'))
+           {
+               //return false if X is also the winner
+               if(isWinner(board, 'X'))
+                   return false;
+               
+               //return true if countX==countO
+               return countX==countO;
+           }
+            
+            //check if X is the winner. If X is the winner countX must be greater than countO
+            if(isWinner(board, 'X') && countX!= countO+1)
+                return false;
+            
+            //return true if O is not the winner
+            return true;
+        }
+        return false;
+    }
+};

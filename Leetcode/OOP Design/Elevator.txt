@@ -1,0 +1,154 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+
+using namespace std;
+
+
+static const int UP =1;
+static const int DOWN =2;
+static const int IDLE =0;
+static const maxFloor = 15;
+
+public class Request
+{
+    int floorNum;
+    int direction;
+}
+
+class Elevator
+{
+    int currState;
+    int currFloor;
+    priority_queue<int, vector<int>, less<int>> upQueue; //minHeap
+    priority_queue<int, vector<int>> downQueue; //maxHeap
+    priority_queue<int, vector<int>, less<int>> incomingUpQueue; //minHeap
+    priority_queue<int, vector<int>> incomingDownQueue; //maxHeap
+    
+    Elevator()
+    {
+        currState = IDLE;
+        currFloor = 0;
+    }
+    
+    void putRequest(Request request)
+    {
+        // priority_queue<int, vector<int>> directionQueue = downQueue;
+        // priority_queue<int, vector<int>> incomingDirectionQueue = incomingDownQueue;
+        // priority_queue<int, vector<int>> oppositeQueue = upQueue;
+        // if(currState== UP)
+        // {
+        //     directionQueue = upQueue;
+        //     incomingDirectionQueue = incomingUpQueue;
+        //     oppositeQueue = downQueue;
+        // }
+        
+        // if(request.direction == currState)
+        // {
+        //     if(isValidFloor(request.floorNum))
+        //         directionQueue.push(request.floorNum);
+        //     else
+        //         incomingDirectionQueue.push(request.floorNum);
+        // }
+        // //say the elevator is in 5th floor and the request comes for 7th floor to go down.
+        // //So put it in down queue.
+        // else
+        // {
+        //     //since currState is Up push to downQueue
+        //     oppositeQueue.push(request.floorNum);
+        // }
+        
+        if(request.direction == currState)
+        {
+            if(request.direction == UP)
+            {
+                if(request.floorNum >= currFloor)
+                {
+                    upQueue.push(request.floorNum);
+                }
+                else
+                {
+                    incomingUpQueue.push(request.floorNum);
+                }
+            }
+        }
+        else
+        {
+            downQueue.push(request.floorNum);
+        }
+        
+    }
+    
+    bool isValidFloor(int floorNum)
+    {
+        return currState == UP ? floorNum > currFloor : floorNum < currFloor;
+    }
+    /*
+	When we are serving the request if the direction is UP we serve the upQueue first and then we serve downQueue and make incomingUpQueue as upQueue
+
+	*/
+    void serveRequest()
+    {
+        if(currState == UP)
+        {
+            while(!upQueue.empty)
+            {
+                int top = upQueue.top();
+                upQueue.pop();
+                serveFloor(top);
+            }
+            
+            upQueue = incomingUpQueue;
+            
+            while(!downQueue.empty())
+            {
+                int top = downQueue.top();
+                downQueue.pop();
+                serveFloor(top);
+            }
+            
+        }else
+        {
+            while(!downQueue.empty)
+            {
+                int top = downQueue.top();
+                downQueue.pop();
+                serveFloor(top);
+            }
+            
+            downQueue = incomingDownQueue;
+            
+            while(!upQueue.empty())
+            {
+                int top = upQueue.top();
+                upQueue.pop();
+                serveFloor(top);
+              
+        }
+    }
+    
+    void serveFloor(int n)
+    {
+        if(n > currFloor)
+        {
+            currState = UP;
+        }else
+        {
+            currState = DOWN;
+        }
+        
+        goToFloor(top); // do some hardware magic to go and serve that floor
+
+        currFloor = top;
+        //opens door to serve request
+        openDoor(); //again does some hardware shit
+        stayIdle(); //keeps the door open for sometime
+        closeDoor();
+    }
+}

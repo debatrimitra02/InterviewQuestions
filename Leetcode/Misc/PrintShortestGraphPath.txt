@@ -1,0 +1,142 @@
+/*
+
+q.com:
+	Contact Us
+	About Us
+
+ q.com/Contact Us :
+	International
+	US
+
+q.com/Contact Us/International:
+	Phone
+	Email
+
+
+
+So given a destination and a source you will have to find 3 shortest path to reach from source to destination.
+
+*/
+
+
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include<climits>
+#include<algorithm>
+#include<list>
+#include<vector> 
+
+using namespace std;
+
+class GraphNode
+{
+    string nodeName;
+    list<GraphNode> neighbors;
+}
+
+class Graph{
+    map<string, GraphNode> vertices;
+    
+    //constructor
+    Graph(int V)
+    {
+        
+    }
+    void addEdge(string a, string b)
+    {
+        auto it = vertices.find(a);
+        GraphNode* src;
+        GraphNode* dest;
+        if(it == vertices. end())
+        {
+            src = new GraphNode(a)
+        }
+        else
+        {
+            src = it->second;
+        }
+        auto it2 =vertices.find(b);
+        if(it2 == vertices. end())
+        {
+             dest = new GraphNode(a)
+        }
+        else
+        {
+            dest =  it->second;
+        }
+        src.neighbors.push_back(dest);
+        dest.neighbors.push_back(src);
+    }
+    
+    vector<GraphNode> makePath(GraphNode node, map<GraphNode, GraphNode> nodeToParent)
+    {
+        vector<GraphNode> result;
+        auto it = nodeToParent.find(node);
+        while(it->second != NULL)
+        {
+            result.push_front(it->second);
+            it= nodeToParent.find(it->second);
+        }
+        return result;
+    }
+    
+    vector<vector<GraphNode>> shortestPath(GraphNode source, GraphNode destination)
+    {
+        set<GraphNode> visited;
+        //pair of the current GraphNode being processed and the parent GraphNode of the current node
+        queue<GraphNode> toVisit; 
+        map<GraphNode, GraphNode> nodeToParent;
+        
+        vector<vector<GraphNode>> paths;
+        
+        visited.insert(source);
+        toVisit.push(source);
+        nodeToParent[source] = NULL;
+        int k=1;
+        
+        while(!toVisit.empty())
+        {
+            GraphNode node = toVisit.top();
+            toVisit.pop();
+            
+            if(node == destination)
+            {
+                vector<GraphNode> path = makePath(node, nodeToParent);
+                paths.push_back(path);
+                if(paths.size()== 3)
+                    return paths;
+                visited.clear();
+                for(i=0; i<path.size(); i++)
+                {
+                    if(path[i] != source)
+                        visited.insert(path[i]);
+                }
+                while(! toVisit.empty())
+                    toVisit.pop();
+                    
+                toVisit.push(source);
+                nodeToParent.clear();
+            }
+            
+            for(int i=0; i<node.neighbors.size(); i++)
+            {
+                if(visited.find(node.neighbors[i]) == visited.end())
+                {
+                    visited.insert(node.neighbors[i])
+                    toVisit.push(node.neighbors[i]);
+                    nodeToParent[node.neighbors[i]] = node;
+                }
+            }
+        }
+        
+        return paths;
+    }
+}
+

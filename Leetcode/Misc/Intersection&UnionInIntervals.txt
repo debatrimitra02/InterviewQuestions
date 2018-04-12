@@ -1,0 +1,58 @@
+std::vector<std::pair<int, int>> OrFunction(const std::vector<std::pair<int, int>>& v1,
+                                                                    const std::vector<std::pair<int, int>>& v2)
+{
+    std::vector<std::pair<int, int>> result;
+    std::map<int, int> data;
+
+    for (const auto& p : v1)
+    {
+        data[p.first]++;
+        data[p.second]--;
+    }
+    for (const auto& p : v2)
+    {
+        data[p.first]++;
+        data[p.second]--;
+    }
+    int i = 0;
+    int count = 0;
+    for (const auto& p : data)
+    {
+        if (count == 0) i = p.first;
+        count += p.second;
+        if (count == 0) result.push_back(std::make_pair(i, p.first));
+    }
+
+    return result;
+}
+std::vector<std::pair<int, int>> AndFunction(const std::vector<std::pair<int, int>>& v1,
+                                                                      const std::vector<std::pair<int, int>>& v2)
+{
+    std::vector<std::pair<int, int>> result;
+    std::map<int, int> data;
+
+    for (const auto& p : v1)
+    {
+        data[p.first]++;
+        data[p.second]--;
+    }
+    for (const auto& p : v2)
+    {
+        data[p.first]++;
+        data[p.second]--;
+    }
+    int i = 0;
+    int count = 0;
+    for (const auto& p : data)
+    {
+        count += p.second;
+        if (p.second > 0 && count > 1) i = p.first;
+        if (p.second < 0 && i != 0)
+        {
+            result.push_back(std::make_pair(i, p.first));
+            i = 0;
+        }
+    }
+
+    return result;
+}

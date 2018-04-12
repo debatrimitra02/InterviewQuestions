@@ -1,0 +1,42 @@
+int getMax(TreeNode root, TreeNode* currentMax, enum attribValue)
+{
+    if(root == null)
+        return 0;
+    int count == 0;
+    if(root.val == attribValue)
+    {
+        if(currentMax == NULL)
+            currentMax = root;
+        count++;
+    }
+    
+    TreeNode* max = currentMax;
+    if(root->left != NULL)
+    {
+        TreeNode* maxLeft = currentMax;
+        int leftCount = getMax(root->left, maxLeft, attribValue);
+        if(currentMax == maxLeft)
+            count = count + leftCount;
+        else
+        {
+            if(leftCount > count)
+                currentMax = maxLeft;
+            count = max(count, leftCount);
+        }
+    }
+    
+    if(root->right != NULL)
+    {
+        TreeNode* maxRight = max;
+        int rightCount = getMax(root->right, maxRight, attribValue);
+        if(currentMax == maxRight)
+            count = count + rightCount;
+        else
+        {
+            if(rightCount > count)
+                currentMax = maxRight;
+            count = max(count, rightCount);
+        }
+    }
+    return count;
+}

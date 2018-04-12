@@ -1,0 +1,116 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+
+using namespace std;
+
+abstract class Item
+{
+    int itemId;
+    float price;
+}
+
+class ItemList
+{
+    vector<Item> itemList;
+    
+    /*
+        If you want to vend multiple items from the same cell you will have to pass
+        quantity here and if itemList.size() < quantity then throw exception.
+        Otherwise -
+        vector<Item> items
+        for(int i=0; i<quantity; i++)
+        {
+            items.push_back(itemList[i]);
+            
+        }
+        return items;
+    */
+    
+    Item getItem()
+    {
+        if(itemList.empty())
+            throw new NotFoundException();
+            
+        return itemList[0];
+    }
+    /*
+     Similarly after you have validated transaction for multiple items i.e the total price
+     vend items per quantity
+    
+    */
+    
+    Item vendItem()
+    {
+        itemList.pop_back();
+    }
+    
+    int getCount()
+    {
+        return itemList.size();
+    }
+}
+
+class Coke extends Item
+{
+    
+}
+
+public class VendingMachine
+{
+    vector<vector<ItemList>> machine;
+    map<int, pair<int, int> > codeVsCell;
+    
+    Item getItem(int code)
+    {
+        pair<int, int> cell = codeVsCell[code];
+        
+        //now check for invalid entry;
+        auto it = codeVsCell.find(code);
+        if(it == codeVsCell.end())
+            throw new InvalidParameterException();
+            
+        return getItem(cell.first, cell.second);
+    }
+    
+    Item getItem(int row, int col)
+    {
+       Item item = machine[row][col].getItem();
+       int price = item.price;
+       chargeforItem(price);
+       machine[row][col].vendItem();
+    }
+    
+    void chargeforItem(float price)
+    {
+        //give user the price of the item
+        promptPrice(price);
+        //for credit cards it will give the exact amount 
+        //and for cash it will give the amount you paid.
+        float money = getMoneyFromUser();
+        
+        if(money < price)
+            throw new NotEnoughBalanceException();
+        else
+        {
+            float balance = money - price;
+            // if you have paid the exact amount then your balance is 0 
+            //and you get back nothing
+            giveChange(balance);
+        }
+        
+    }
+    
+    int getItemCount(int row, int col)
+    {
+        int count = machine[row][col].getCount();
+        return count;
+    }
+}
+

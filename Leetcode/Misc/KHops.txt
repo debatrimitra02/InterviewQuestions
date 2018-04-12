@@ -1,0 +1,125 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+/*
+Determine whether you could take a k-hop trip from a given starting location to a given destination, 
+using only a given set of boarding passes.  
+
+*/
+
+/*
+Simply do a BFS and keep track of each level. exit when it exceeds k or destination is found.
+
+*/
+
+public class BoardingPass
+{
+    string sourceCode;
+    string destCode;
+}
+
+public class GraphNode
+{
+    string code;
+    vector<GraphNode> neighbors;
+}
+
+public class Graph
+{
+    map<string, GraphNode> airports;
+    
+    void add(BoardingPass ticket)
+    {
+        GraphNode source;
+        auto it = airports.find(ticket.sourceCode);
+        if(it == airports.end())
+        {
+            source = new GraphNode(ticket.sourceCode);
+            airports[ticket.sourceCode] = source;
+        }else{
+            source = it->second;
+        }
+        
+        GraphNode dest;
+        auto it1 = airports.find(ticket.destCode);
+        if(it1 == airports.end())
+        {
+            dest = new GraphNode(ticket.destCode);
+            airports[ticket.destCode] = dest;
+        }else
+        {
+            dest = it->second;
+        }
+       
+        source.neighbors.push_back(dest);
+        
+    }
+}
+
+public class ShortestPath
+{
+    Graph graph;
+    public ShortestPath(vector<BoardingPass> tickets)
+    {
+        graph = new Graph();
+        
+        for(int i=0; i<tickets.size();i++)
+        {
+            graph.add(tickets[i]);
+        }
+    }
+    
+    bool kHop(int k, string source, string destination)
+    {
+        set<GraphNode> visited;
+        queue<pair<GraphNode, int>> toVisit;
+        auto it = graph.airports.find(source);
+        GraphNode src = it->second;
+        if(it== graph.airports.end())
+            return false;
+            
+        auto it1 = graph.airports.find(destination);
+        if(it1== graph.airports.end())
+            return false;
+        GraphNode dest = it1->second;
+        visited.insert(src);
+        toVisit.push_back(make_pair(src,0));
+        
+        while(!toVisit.empty())
+        {
+            pair<GraphNode, int> node = toVisit.top();
+            toVisit.pop();
+            
+            if(node.second > k)
+                return false;
+            vector<GraphNode> neigh = node.first.neighbors;
+            for(int i=0; i< neigh.size(); i++)
+            {
+                if(neigh[i].code == destination)
+                {
+                    return true;
+                }
+                else
+                {
+                    auto it = visited.find(neigh[i]);
+                    if(it == visited.end())
+                    {
+                        visited.insert(neigh[i]);
+                        toVisit.push_back(make_pair(neigh[i], node.second+1));
+                    }
+                    
+                }
+            }
+            
+        }
+        return false;
+    }
+}
+
+
+
+

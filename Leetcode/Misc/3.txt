@@ -1,0 +1,72 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+/*
+Michelle has created a word game for her students. The word game begins with Michelle writing a string and a number, K, on the board. 
+The students must find a substring of size K such that there is exactly one character that is repeated one; 
+in other words, there should be k - 1 distinct characters in the substring. 
+
+Write an algorithm to help the students find the correct answer. If no such substring can be found, return an empty list; 
+if multiple such substrings exist, return all them, without repetitions. The order in which the substrings are does not matter. 
+
+*/
+#include <iostream>
+#include<string>
+#include<vector>
+#include <unordered_map>
+
+using namespace std;
+vector<string> gameString(string str, int k)
+{
+    vector<string> res;
+    if(str.length()==0 || str.length()<k)
+        return res;
+    unordered_map<char, int>map;
+    int i;
+    for(i=0; i<k;i++)
+    {
+        map[str[i]]++;
+    }
+    if(map.size() == k-1)
+    {
+        string s = str.substr(0, k);
+        res.push_back(s);
+    }
+    for(i=k; i<str.length(); i++)
+    {
+        int count = map[str[i-k]];
+        if(count == 1)
+        {
+            map.erase(str[i-k]);
+        }
+        else
+        {
+            map[str[i-k]]--;
+        }
+        map[str[i]]++;
+        if(map.size() == k-1)
+        {
+            string temp = str.substr(i-k+1, k);
+            res.push_back(temp);
+        }
+    }
+    return res;
+}
+
+int main()
+{
+    string str = "awaglkgawla";
+    vector<string> res = gameString(str, 4);
+    for(int i=0; i<res.size(); i++)
+    {
+        cout<<res[i];
+        cout<<endl;
+    }
+}
+
+
+

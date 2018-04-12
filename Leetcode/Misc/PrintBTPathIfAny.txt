@@ -1,0 +1,125 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include<vector>
+
+/*
+Given a binary tree and two values a & b find if there is a path between nodes with values a & b.
+1. If either one of them don't exist in the tree the return an empty array.
+2. If there is no path between nodes (i.e you can only move in one direction - > 
+parent->child and not the other way around) then return an empty vector.
+3. Otherwise return the path
+
+
+*/
+
+using namespace std;
+
+class TreeNode
+{
+    public:
+        TreeNode* left;
+        TreeNode* right;
+        int val;
+};
+
+bool findNodes(TreeNode* root, int a, int b, bool& v1, bool& v2, TreeNode** firstNode)
+{
+    if(root == NULL)
+        return false;
+        
+    if(root->val == a && !v1)
+    {
+        v1 = true;
+        firstNode = &root;
+        return findNodes(root, a, b, v1, v2, firstNode);
+    }
+    if(root->val == b && !v2)
+    {
+        v2 = true;
+        firstNode = &root;
+        return findNodes(root, a, b, v1, v2, firstNode);
+        
+    }
+    
+    if(v1 && v2)
+        return true;
+    
+    findNodes(root->left, a, b, v1, v2, firstNode);
+    findNodes(root->right, a, b, v1, v2, firstNode);
+    
+    return false;
+}
+
+bool findPath(TreeNode* firstNode, int next, vector<int>& res)
+{
+    if(firstNode == NULL)
+        return false;
+    cout<<firstNode->val;
+    res.push_back(firstNode->val);
+    if(firstNode-> val == next)
+        return true;
+    else
+    {
+       bool left = findPath(firstNode->left, next, res);
+       if(!left && firstNode->left)
+            res.pop_back();
+        bool right = findPath(firstNode->right, next, res);
+        if(!right && firstNode->right)
+            res.pop_back();
+        
+        
+    }
+}
+vector<int> returnPath (TreeNode* root, int a, int b)
+{
+    vector<int> result;
+    if(root == NULL)
+        return result;
+        
+    bool v1 = false;
+    bool v2 = false;
+    TreeNode** firstNode;
+    
+    bool gotNodes = findNodes(root, a, b, v1, v2, firstNode);
+    cout<< gotNodes;
+    if(gotNodes)
+    {
+        if((*firstNode)->val == a)
+            findPath(*firstNode, b, result);
+        else
+            findPath(*firstNode, a, result);
+    }
+    
+    return result;
+}
+TreeNode* newNode(int key)
+{
+    TreeNode *temp = new TreeNode;
+    temp->val = key;
+    temp->left = temp->right = NULL;
+    return temp;
+}
+
+int main()
+{
+    TreeNode * root = newNode(3);
+    root->left = newNode(5);
+    root->right = newNode(1);
+    root->left->left = newNode(6);
+    root->left->right = newNode(2);
+    root->right->left = newNode(0);
+    root->right->right = newNode(8);
+    root->right->right->left = newNode(11);
+    
+    vector<int> res = returnPath(root, 1, 8);
+    for(int i=0; i<res.size(); i++)
+        cout<<res[i]<<",";
+    
+}
