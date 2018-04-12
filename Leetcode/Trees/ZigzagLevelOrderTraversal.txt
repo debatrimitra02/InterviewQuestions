@@ -1,0 +1,59 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+
+    int height(TreeNode* root)
+    {
+        if(root==NULL)
+            return 0;
+            
+        int lh=height(root->left);
+        int rh=height(root->right);
+        return max(lh,rh)+1;
+    }
+    
+    void levelOrderrecur(TreeNode* root, vector<int>& V, int height, bool flag)
+    {
+        if(root==NULL)
+            return;
+            
+        if(height==1)
+            V.push_back(root->val);
+            
+        if(height>1 && flag==0)
+        {
+           levelOrderrecur(root->left,V,height-1,flag);
+           levelOrderrecur(root->right,V,height-1,flag);
+        }
+        if(height>1 && flag==1)
+        {
+             levelOrderrecur(root->right,V,height-1,flag);
+             levelOrderrecur(root->left,V,height-1,flag);
+        }
+    }
+    
+
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+    vector<vector<int> >Out;
+    int h=height(root);
+    bool flag=0;
+    for(int i=1;i<=h;i++)
+    {
+        vector<int>V;
+        levelOrderrecur(root,V,i,flag);
+        Out.push_back(V);
+        V.clear();
+        flag=!flag;
+    }
+    return Out;
+        
+    }
+};
